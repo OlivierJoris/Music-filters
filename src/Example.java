@@ -15,7 +15,10 @@ public class Example
     {
         try
         {
-            // TODO: instanciate myFilter
+            // 5 seconds delay filter
+            DelayFilter myFilter = new DelayFilter(5 * 44100);
+
+            // GainFilter myFilter = new GainFilter(0.6);
             
             TestAudioFilter.applyFilter(myFilter, "Source.wav", "Filtered.wav");
         }

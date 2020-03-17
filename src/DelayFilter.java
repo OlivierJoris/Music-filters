@@ -1,41 +1,49 @@
 /* ------------------------------------------------------------------------- *
- * Implementation of the DelayFilter class : Filter subclass.
+ * Implementation of the DelayFilter class.
  * 
  * @authors Maxime GOFFART (180521) and Olivier JORIS (182113).
  * ------------------------------------------------------------------------- */
 
-public class DelayFilter extends Filter
+import be.uliege.montefiore.oop.audio.Filter;
+
+public class DelayFilter implements Filter
 {
-    private int delayValue;
+    private int delayValue; // The delay value of the DelayFilter.
+    private int count; // A counter for delaying the samples.
+    private double[] delayedSamples; /* An array containing the actual
+                                        delayed samples */
 
     /* ------------------------------------------------------------------------- *
      * Constructor method.
      * 
-     * @param nbInputs, the number of inputs of the DelayFilter.
-     * @param nbOutputs, the number of outputs of the DelayFilter.
      * @param delayValue, the delay value of the DelayFilter.
-     * 
-     * @throws, the number of inputs is not equal to the number of outputs.
      * ------------------------------------------------------------------------- */
-    public DelayFilter(int nbInputs, int nbOutputs, int delayValue)
+    public DelayFilter(int delayValue)
     {   
-        // TODO: WHEN WE'LL HAVE SEEN THE THROW EXCEPTION
-        // if(nbInputs != nbOutputs)
-            //Throw Exception
-
-        super(nbInputs, nbOutputs);
         this.delayValue = delayValue;
+
+        count = 0;
+
+        delayedSamples = new double[delayValue];
+        // We fill the array with zeros in order to delay the samples.
+        for(int i = 0; i < delayedSamples.length; ++i)
+            delayedSamples[i] = 0.0;
+        
     }
 
-    /* ------------------------------------------------------------------------- *
-     * Getter method for delayValue.
-     * 
-     * @return delayValue, the delayValue of the DelayFilter.
-     * ------------------------------------------------------------------------- */
-    public int delayValue()
-    {
-        return delayValue;
-    }
+    /*
+    * Implementation of the nbInputs() and nbOutputs methods : the DelayFilter
+    only has 1 input and 1 output.
+    */
+   public int nbInputs()
+   {
+      return 1;
+   }
+   
+   public int nbOutputs()
+   {
+      return 1;
+   }
 
     /* ------------------------------------------------------------------------- *
      * Perfoms one step of computation of the DelayFilter.
@@ -52,11 +60,27 @@ public class DelayFilter extends Filter
         // if(input.length != nbInputs())
             //Throw Exception (FilterException)
 
-        double[] output = new double[nbOutputs()]; 
+        double[] output = new double[1]; 
 
-        for(int i = 0; i < nbInputs() - delayValue; ++i)
-            output[i + delayValue] = input[i];
+        if(count == delayValue)
+            count = 0;
+        
+        output[0] = delayedSamples[count];
+        delayedSamples[count] = input[0];
+
+        ++count;
 
         return output;
+    }
+
+    /*
+    * reset() method as specified in the Filter interface. 
+    */
+    public void reset()
+    {
+        count = 0;
+        // We reset the delayedSamples array.
+        for(int i = 0; i < delayedSamples.length; ++i)
+            delayedSamples[i] = 0.0;
     }
 }

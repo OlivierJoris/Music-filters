@@ -1,41 +1,38 @@
 /* ------------------------------------------------------------------------- *
- * Implementation of the GainFilter class : Filter subclass (specialization).
+ * Implementation of the GainFilter class.
  * 
  * @authors Maxime GOFFART (180521) and Olivier JORIS (182113).
  * ------------------------------------------------------------------------- */
 
-public class GainFilter extends Filter
+import be.uliege.montefiore.oop.audio.Filter;
+
+public class GainFilter implements Filter
 {
     private double gainValue;
 
     /* ------------------------------------------------------------------------- *
      * Constructor method.
      * 
-     * @param nbInputs, the number of inputs of the GainFilter.
-     * @param nbOutputs, the number of outputs of the GainFilter.
      * @param gainValue, the gain value of the GainFilter.
-     * 
-     * @throws, the number of inputs is not equal to the number of outputs.
      * ------------------------------------------------------------------------- */
-    public GainFilter(int nbInputs, int nbOutputs, double gainValue)
+    public GainFilter(double gainValue)
     {   
-        // TODO: WHEN WE'LL HAVE SEEN THE THROW EXCEPTION
-        // if(nbInputs != nbOutputs)
-            //Throw Exception
-
-        super(nbInputs, nbOutputs);
         this.gainValue = gainValue;
     }
 
-    /* ------------------------------------------------------------------------- *
-     * Getter method for GainValue.
-     * 
-     * @return gainValue, the gainValue of the GainFilter.
-     * ------------------------------------------------------------------------- */
-    public double gainValue()
-    {
-        return gainValue;
-    }
+    /*
+    * Implementation of the nbInputs() and nbOutputs() methods : the GainFilter
+    only has 1 input and 1 output.
+    */
+   public int nbInputs()
+   {
+      return 1;
+   }
+   
+   public int nbOutputs()
+   {
+      return 1;
+   }
 
     /* ------------------------------------------------------------------------- *
      * Perfoms one step of computation of the Gainfilter.
@@ -52,11 +49,19 @@ public class GainFilter extends Filter
         // if(input.length != nbInputs())
             //Throw Exception (FilterException)
 
-        double[] output = new double[nbOutputs()]; 
+        double[] output = new double[1]; 
 
-        for(int i = 0; i < nbInputs(); ++i)
-            output[i] = input[i] * gainValue;
+        output[0] = input[0] * gainValue;
 
         return output;
+    }
+
+    /*
+    * reset() method as specified in the Filter interface. 
+    */
+    public void reset()
+    {
+        // We do not need to reset anything.
+        return;
     }
 }

@@ -1,34 +1,39 @@
 /* ------------------------------------------------------------------------- *
- * Implementation of the AdditionFilter class : Filter subclass.
+ * Implementation of the AdditionFilter class.
  * 
  * @authors Maxime GOFFART (180521) and Olivier JORIS (182113).
  * ------------------------------------------------------------------------- */
 
-public class AdditionFilter extends Filter
+import be.uliege.montefiore.oop.audio.Filter;
+
+public class AdditionFilter implements Filter
 {
     /* ------------------------------------------------------------------------- *
      * Constructor method.
-     * 
-     * @param nbInputs, the number of inputs of the AdditionFilter.
-     * @param nbOutputs, the number of outputs of the AdditionFilter.
-     * 
-     * @throws, the number of inputs is not equal to the double of the 
-     *          number of outputs.
      * ------------------------------------------------------------------------- */
-    public AdditionFilter(int nbInputs, int nbOutputs)
+    public AdditionFilter()
     {
-        // TODO: WHEN WE'LL HAVE SEEN THE THROW EXCEPTIONS
-        // if(2 * nbOutputs != nbInputs)
-            // Throw Exception
-
-        super(nbInputs, nbOutputs);
+        return;
     }
+
+    /*
+    * Implementation of the nbInputs() and nbOutputs() methods : An 
+    AdditionFilter has 2 inputs and 1 output.
+    */
+    public int nbInputs()
+    {
+      return 2;
+    }
+   
+   public int nbOutputs()
+   {
+      return 1;
+   }
 
     /* ------------------------------------------------------------------------- *
      * Perfoms one step of computation of the AdditionFilter.
      *
-     * @param input, an array containing n_I samples (one for each input,
-     *               the second sequence start at input[nbInputs() / 2]).
+     * @param input, an array containing n_I samples (one for each input).
      * 
      * @throws FilterException, inputs are incomplete.
      * 
@@ -40,11 +45,15 @@ public class AdditionFilter extends Filter
         // if(input.length != nbInputs())
             //Throw Exception (FilterException)
 
-        double[] output = new double[nbOutputs()]; 
+        double[] output = new double[1]; 
 
-        for(int i = 0; i < nbInputs(); ++i)
-            output[i] = input[i] + input[i + output.length];
+        output[0] = input[0] + input[1];
 
         return output;
+    }
+
+    public void reset()
+    {
+      return;
     }
 }
