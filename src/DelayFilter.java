@@ -10,7 +10,7 @@ public class DelayFilter implements Filter
 {
     private int delayValue; // The delay value of the DelayFilter.
     private int count; // A counter for delaying the samples.
-    private double[] delayedSamples; /* An array for memorizing the actual
+    private double[] delayedSamples; /* An array to memorize the actual
                                         delayed samples */
 
     /* ------------------------------------------------------------------------- *
