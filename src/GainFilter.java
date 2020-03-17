@@ -8,7 +8,7 @@ import be.uliege.montefiore.oop.audio.Filter;
 
 public class GainFilter implements Filter
 {
-    private double gainValue;
+    private double gainValue; // The gain value of the GainFilter.
 
     /* ------------------------------------------------------------------------- *
      * Constructor method.
