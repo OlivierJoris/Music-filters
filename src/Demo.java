@@ -21,7 +21,7 @@ public class Demo
 		try{
 			checkParamters(args.length);
 		}catch(ParametersException e){
-			System.out.println(e);
+			System.err.println(e);
 			System.exit(-1);
 		}
 
