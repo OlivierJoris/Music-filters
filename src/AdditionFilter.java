@@ -5,6 +5,7 @@
  * ------------------------------------------------------------------------- */
 
 import be.uliege.montefiore.oop.audio.Filter;
+import be.uliege.montefiore.oop.audio.FilterException;
 
 public class AdditionFilter implements Filter
 {
@@ -39,11 +40,12 @@ public class AdditionFilter implements Filter
      * 
      * @return, an array with the resulting n_O samples (one for each output).
      * ------------------------------------------------------------------------- */
-    public double[] computeOneStep(double[] input)
+    public double[] computeOneStep(double[] input) throws FilterException
     {
-        // TODO: WHEN WE'LL HAVE SEEN THE THROW EXCEPTIONS
-        // if(input.length != nbInputs())
-            //Throw Exception (FilterException)
+        if(input.length != nbInputs())
+            throw new FilterException("Inputs are incomplete");
+
+        System.out.println(input.length);
 
         double[] output = new double[1]; 
 

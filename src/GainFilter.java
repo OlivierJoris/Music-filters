@@ -5,6 +5,7 @@
  * ------------------------------------------------------------------------- */
 
 import be.uliege.montefiore.oop.audio.Filter;
+import be.uliege.montefiore.oop.audio.FilterException;
 
 public class GainFilter implements Filter
 {
@@ -43,11 +44,10 @@ public class GainFilter implements Filter
      * 
      * @return, an array with the resulting n_O samples (one for each output).
      * ------------------------------------------------------------------------- */
-    public double[] computeOneStep(double[] input)
+    public double[] computeOneStep(double[] input) throws FilterException
     {
-        // TODO : WHEN WE'LL HAVE SEEN THE THROW EXCEPTIONS
-        // if(input.length != nbInputs())
-            //Throw Exception (FilterException)
+        if(input.length != nbInputs())
+            throw new FilterException("Invalid number of inputs");
 
         double[] output = new double[1]; 
 
