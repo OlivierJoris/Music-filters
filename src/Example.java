@@ -6,7 +6,6 @@
  * 
  * @author: J.-F. Grailet (ULiege)
  */
-
 import be.uliege.montefiore.oop.audio.*; // Will import: TestAudioFilter, Filter, FilterException
 
 public class Example
@@ -16,11 +15,12 @@ public class Example
         try
         {
             // 5 seconds delay filter
-            DelayFilter myFilter = new DelayFilter(5 * 44100);
+            DelayFilter d = new DelayFilter(5 * 44100);
 
-            // GainFilter myFilter = new GainFilter(0.6);
+            GainFilter g = new GainFilter();
             
-            TestAudioFilter.applyFilter(myFilter, "Source.wav", "Filtered.wav");
+            TestAudioFilter.applyFilter(g, "Source.wav", "Filtered.wav");
+            TestAudioFilter.applyFilter(d, "Filtered.wav", "Filtered.wav");
         }
         catch(Exception e)
         {
