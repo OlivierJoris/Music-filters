@@ -12,7 +12,7 @@ public class Demo
 	// Method to check the number of arguments given to the program
 	static void checkParamters(int numberParamateres) throws ParametersException{
 		if(numberParamateres != 2){
-			throw new ParametersException("Error in command-line arguments : required 2 arguments.\n The source file and the output file only.");
+			throw new ParametersException("Error in command-line arguments - required 2 arguments.\n usage: java -cp bin:audio.jar Demo <inputFile> <outputFile>");
 		}
 	}
 

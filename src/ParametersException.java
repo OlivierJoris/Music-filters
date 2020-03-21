@@ -7,15 +7,7 @@
 
 class ParametersException extends Exception{
 
-	String errorMessage;
+	public ParametersException() { super();}
 
-	public ParametersException(String errorMessage)
-	{
-		this.errorMessage = errorMessage;
-	}
-
-	public String toString()
-	{
-		return errorMessage;
-	}
+	public ParametersException(String errorMessage) { super(errorMessage);}
 }
