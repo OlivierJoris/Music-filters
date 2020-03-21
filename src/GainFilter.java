@@ -1,6 +1,6 @@
 /* ------------------------------------------------------------------------- *
  * Implementation of the GainFilter class.
- * 
+ *
  * @authors Maxime GOFFART (180521) and Olivier JORIS (182113).
  * ------------------------------------------------------------------------- */
 
@@ -13,11 +13,14 @@ public class GainFilter implements Filter
 
     /* ------------------------------------------------------------------------- *
      * Constructor method.
-     * 
+     *
      * @param gainValue, the gain value of the GainFilter.
      * ------------------------------------------------------------------------- */
-    public GainFilter(double gainValue)
-    {   
+    public GainFilter(double gainValue) throws FilterException
+    {
+		if(gainValue < 0)
+			throw new FilterException("gainValue can't a negative number");
+
         this.gainValue = gainValue;
     }
 
@@ -25,23 +28,23 @@ public class GainFilter implements Filter
     * Implementation of the nbInputs() and nbOutputs() methods : the GainFilter
     only has 1 input and 1 output.
     */
-   public int nbInputs()
-   {
-      return 1;
-   }
-   
-   public int nbOutputs()
-   {
-      return 1;
-   }
+   	public int nbInputs()
+   	{
+    	return 1;
+   	}
+
+   	public int nbOutputs()
+   	{
+    	return 1;
+   	}
 
     /* ------------------------------------------------------------------------- *
      * Perfoms one step of computation of the Gainfilter.
      *
      * @param input, an array containing n_I samples (one for each input).
-     * 
+     *
      * @throws FilterException, inputs are incomplete.
-     * 
+     *
      * @return, an array with the resulting n_O samples (one for each output).
      * ------------------------------------------------------------------------- */
     public double[] computeOneStep(double[] input) throws FilterException
@@ -49,7 +52,7 @@ public class GainFilter implements Filter
         if(input.length != nbInputs())
             throw new FilterException("Invalid number of inputs");
 
-        double[] output = new double[1]; 
+        double[] output = new double[1];
 
         output[0] = input[0] * gainValue;
 
@@ -57,7 +60,7 @@ public class GainFilter implements Filter
     }
 
     /*
-    * reset() method as specified in the Filter interface. 
+    * reset() method as specified in the Filter interface.
     */
     public void reset()
     {

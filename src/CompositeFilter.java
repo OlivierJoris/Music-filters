@@ -27,6 +27,26 @@ public class CompositeFilter extends Block
 
 	/**********************************************************
 
+	Methods from Filter
+
+	**********************************************************/
+
+	public int nbInputs(){ return numberInputs;}
+
+	public int nbOutputs(){ return numberbOutputs;}
+
+	public double[] computeOneStep(double[] input) throws FilterException
+	{
+		return null;
+	}
+
+	public void reset()
+	{
+		return;
+	}
+
+	/**********************************************************
+
 	Methods specific to the CompositeFilter class.
 
 	**********************************************************/
