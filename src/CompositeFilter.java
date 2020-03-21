@@ -1,5 +1,6 @@
 /* ------------------------------------------------------------------------- *
- * Implementation of the CompositeFilter class.
+ * Implementation of the CompositeFilter class which is an extension of
+ * the Block class.
  *
  * @authors Maxime GOFFART (180521) and Olivier JORIS (182113).
  * ------------------------------------------------------------------------- */
@@ -7,13 +8,13 @@
 import java.util.Vector;
 import be.uliege.montefiore.oop.audio.*;
 
-public class CompositeFilter implements Filter
+public class CompositeFilter extends Block
 {
 
 	private int numberInputs; // number of inputs of the CompositeFilter
 	private int numberbOutputs; // number of outputs of the CompositeFilter
 
-	private Vector<Filter> filters; // Storing all the filters -- absolutely NOT sure that its the best solution
+	private Vector<Block> blocks; // Storing all the filters
 
 
 	//Constructor
@@ -21,33 +22,7 @@ public class CompositeFilter implements Filter
 	{
 		this.numberInputs = nbInputs;
 		this.numberbOutputs = nbOutputs;
-		filters = new Vector<Filter>();
-	}
-
-	/**********************************************************
-
-	Implementing methods from the Filter interface
-
-	**********************************************************/
-
-	public int nbInputs()
-	{
-		return numberInputs;
-	}
-
-	public int nbOutputs()
-	{
-		return numberbOutputs;
-	}
-
-	public double[] computeOneStep(double[] input)
-	{
-		return null;
-	}
-
-	public void reset()
-	{
-		return;
+		blocks = new Vector<Block>();
 	}
 
 	/**********************************************************
@@ -58,7 +33,7 @@ public class CompositeFilter implements Filter
 
 	public void addBlock(Filter f)
 	{
-		filters.add(f);
+		blocks.add((Block)f);
 	}
 
 	public void connectBlockToBlock(Filter f1, int o1, Filter f2, int o2)
