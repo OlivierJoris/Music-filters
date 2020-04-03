@@ -44,12 +44,27 @@ public class Demo
 			Filter mult1 = new GainFilter(0.1);
 			Filter mult2 = new GainFilter(0.1);
 			Filter add = new AdditionFilter();
-		}catch(FilterException e){
-			System.err.println(e.getMessage());
+
+			Filter notInc = new DummyFilter(44100);
+
+			System.out.println("Tree basic blocks instanciated.");
+
+			cf.addBlock(mult1);
+			cf.addBlock(mult2);
+			cf.addBlock(add);
+			//cf.addBlock(null); //Should throw an error.
+
+			System.out.println("Tree basic blocks added to the composite filter.");
+
+			cf.connectBlockToBlock(mult1, 0, add, 0);
+			//cf.connectBlockToBlock(mult1, 0, notInc, 0); //Should throw an error.
+
+			//TestAudioFilter.applyFilter(cf, args[0], args[1]); //Returns an error because every i/o is NOT connected.
+
+		}catch(Exception e){
+			System.err.println(e);
 			System.exit(-1);
 		}
-
-		System.out.println("Tree basic blocks instanciated.");
 
 
 
