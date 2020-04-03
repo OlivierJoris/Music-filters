@@ -35,19 +35,19 @@ public class DelayFilter implements Filter
 
     }
 
-    /*
+	/*
     * Implementation of the nbInputs() and nbOutputs methods : the DelayFilter
     only has 1 input and 1 output.
     */
-   public int nbInputs()
-   {
-      return 1;
-   }
+   	public int nbInputs()
+   	{
+    	return 1;
+	}
 
-   public int nbOutputs()
-   {
-      return 1;
-   }
+	public int nbOutputs()
+	{
+    	return 1;
+	}
 
     /* ------------------------------------------------------------------------- *
      * Perfoms one step of computation of the DelayFilter.
@@ -79,7 +79,7 @@ public class DelayFilter implements Filter
     /*
     * reset() method as specified in the Filter interface.
     */
-    public void reset()
+	public void reset()
     {
         count = 0;
         // We reset the delayedSamples array.

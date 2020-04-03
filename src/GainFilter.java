@@ -19,7 +19,7 @@ public class GainFilter implements Filter
     public GainFilter(double gainValue) throws FilterException
     {
 		if(gainValue < 0)
-			throw new FilterException("gainValue can't a negative number");
+			throw new FilterException("gainValue can't be a negative number");
 
         this.gainValue = gainValue;
     }

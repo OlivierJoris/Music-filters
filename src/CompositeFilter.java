@@ -8,7 +8,7 @@
 import java.util.Vector;
 import be.uliege.montefiore.oop.audio.*;
 
-public class CompositeFilter extends Block
+public class CompositeFilter implements CompositeFilterInterface
 {
 
 	private int numberInputs; // number of inputs of the CompositeFilter
@@ -20,8 +20,8 @@ public class CompositeFilter extends Block
 	//Constructor
 	public CompositeFilter(int nbInputs, int nbOutputs)
 	{
-		this.numberInputs = nbInputs;
-		this.numberbOutputs = nbOutputs;
+		numberInputs = nbInputs;
+		numberbOutputs = nbOutputs;
 		blocks = new Vector<Block>();
 	}
 
@@ -53,7 +53,7 @@ public class CompositeFilter extends Block
 
 	public void addBlock(Filter f)
 	{
-		blocks.add((Block)f);
+		blocks.add(new Block(f));
 	}
 
 	public void connectBlockToBlock(Filter f1, int o1, Filter f2, int o2)

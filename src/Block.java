@@ -9,6 +9,10 @@ import be.uliege.montefiore.oop.audio.*;
 
 public class Block implements BlockInterface
 {
+
+	// The filter of a block.
+	private Filter mainFilter;
+
 	// Get a link to all the filters that are an input of the current Block.
 	private Vector<Filter> inputs;
 
@@ -23,8 +27,9 @@ public class Block implements BlockInterface
 	/*********************************************
 		CONSTRUCTORS
 	**********************************************/
-	public Block()
+	public Block(Filter mainFilter)
 	{
+		this.mainFilter = mainFilter;
 		inputs = new Vector<Filter>();
 		outputs = new Vector<Filter>();
 		inputsAvaibility = new Vector<Boolean>();
@@ -33,29 +38,42 @@ public class Block implements BlockInterface
 	/*********************************************
 		METHODS FROM FILTER
 	**********************************************/
-	public int nbInputs(){ return inputs.size();}
+	public int nbInputs(){ return mainFilter.nbInputs();}
 
-	public int nbOutputs(){ return outputs.size();}
+	public int nbOutputs(){ return mainFilter.nbOutputs();}
+
 
 	public double[] computeOneStep(double[] input) throws FilterException
 	{
-		return null;
+		return mainFilter.computeOneStep(input);
 	}
 
 	public void reset()
 	{
+		mainFilter.reset();
 		return;
 	}
-
 	/*********************************************
 		GETTERS
 	**********************************************/
 
-	public Filter getInput(int inputNumber) { return inputs.get(inputNumber);}
+	public Filter getInput(int inputNumber)
+	{
+		//return inputs.get(inputNumber);
+		return null;
+	}
 
-	public Filter getOutput(int outputNumber) { return outputs.get(outputNumber);}
+	public Filter getOutput(int outputNumber)
+	{
+		//return outputs.get(outputNumber);
+		return null;
+	}
 
-	public boolean getInputAvailability(int inputNumber){ return inputsAvaibility.get(inputNumber);}
+	public boolean getInputAvailability(int inputNumber)
+	{
+		//return inputsAvaibility.get(inputNumber);
+		return false;
+	}
 
 	/*********************************************
 		SETTERS
@@ -63,17 +81,21 @@ public class Block implements BlockInterface
 
 	public void addInput(Filter f)
 	{
-		inputs.add(f);
-		inputsAvaibility.add(false);
+		//inputs.add(f);
+		//inputsAvaibility.add(false);
+		return;
 	}
 
 	public void addOutput(Filter f)
 	{
-		outputs.add(f);
+		//outputs.add(f);
+		return;
 	}
 
 	public void setInputAvailability(int inputNumber, boolean status)
 	{
-		inputsAvaibility.set(inputNumber, status);
+		//inputsAvaibility.set(inputNumber, status);
+		return;
 	}
+
 }

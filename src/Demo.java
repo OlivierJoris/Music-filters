@@ -28,5 +28,32 @@ public class Demo
 		System.out.println("Detected input file : " + args[0]);
 		System.out.println("Detected output file : " + args[1]);
 
+		// Create the CompositeFilter
+
+		CompositeFilter cf = new CompositeFilter(1, 1);
+		if(cf == null){
+			System.err.println("Error while instanciating a new filter.");
+			System.exit(-1);
+		}else{
+			System.out.println("New CompositeFilter instanciated.");
+		}
+
+		// Creates the basic block
+
+		try{
+			Filter mult1 = new GainFilter(0.1);
+			Filter mult2 = new GainFilter(0.1);
+			Filter add = new AdditionFilter();
+		}catch(FilterException e){
+			System.err.println(e.getMessage());
+			System.exit(-1);
+		}
+
+		System.out.println("Tree basic blocks instanciated.");
+
+
+
+
+
 	}
 }
