@@ -56,7 +56,11 @@ public class Demo
 
 			System.out.println("Tree basic blocks added to the composite filter.");
 
-			cf.connectBlockToBlock(mult1, 0, add, 0);
+			cf.connectInputToBlock(0, mult1, 0);
+            cf.connectInputToBlock(0, mult2, 0);
+            cf.connectBlockToBlock(mult1, 0, add, 0);
+            cf.connectBlockToBlock(mult2, 0, add, 1);
+            cf.connectBlockToOutput(add, 0, 0);
 			//cf.connectBlockToBlock(mult1, 0, notInc, 0); //Should throw an error.
 
 			//TestAudioFilter.applyFilter(cf, args[0], args[1]); //Returns an error because every i/o is NOT connected.

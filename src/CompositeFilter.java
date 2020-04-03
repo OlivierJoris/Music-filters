@@ -12,16 +12,20 @@ public class CompositeFilter implements CompositeFilterInterface
 {
 
 	private int numberInputs; // number of inputs of the CompositeFilter
-	private int numberbOutputs; // number of outputs of the CompositeFilter
+	private int numberOutputs; // number of outputs of the CompositeFilter
 
 	private Vector<Block> blocks; // Storing all the filters
 
+	private Block[] inputs = null;
+	private Block[] outputs;
 
 	// Constructor
 	public CompositeFilter(int nbInputs, int nbOutputs)
 	{
 		numberInputs = nbInputs;
-		numberbOutputs = nbOutputs;
+		numberOutputs = nbOutputs;
+		inputs = new Block[numberInputs];
+		outputs = new Block[numberOutputs];
 		blocks = new Vector<Block>();
 	}
 
@@ -33,18 +37,19 @@ public class CompositeFilter implements CompositeFilterInterface
 
 	public int nbInputs(){ return numberInputs;}
 
-	public int nbOutputs(){ return numberbOutputs;}
+	public int nbOutputs(){ return numberOutputs;}
 
 	public double[] computeOneStep(double[] input) throws FilterException
 	{
 
-		try {
+		try 
+		{
 			blocks.get(0).computeOneStep(input);
-		} catch(FilterException e) {
+		} 
+		catch(FilterException e) 
+		{
 			throw new FilterException(e.getMessage());
 		}
-
-
 
 		return null;
 	}
@@ -104,11 +109,51 @@ public class CompositeFilter implements CompositeFilterInterface
 
 	public void connectBlockToOutput(Filter f1, int o1, int o2) throws FilterException
 	{
+		int indexF1 = foundFilter(f1);
+
+		if(indexF1 < 0)
+		{
+			throw new FilterException("The filter f1 is NOT included in the CompositeFilter.");
+		}
+		else
+		{
+			System.out.println("The filter f1 is included in the CompositeFilter.");
+		}
+
+		try
+		{
+			outputs[o2] = blocks.get(indexF1).getOutput(o1);
+		}
+		catch(IndexOutOfBoundsException e)
+		{
+			throw new FilterException(e.getMessage());
+		}
+
 		return;
 	}
 
 	public void connectInputToBlock(int i1, Filter f2, int i2) throws FilterException
 	{
+		int indexF2 = foundFilter(f2);
+
+		if(indexF2 < 0)
+		{
+			throw new FilterException("The filter f2 is NOT included in the CompositeFilter.");
+		}
+		else
+		{
+			System.out.println("The filter f2 is included in the CompositeFilter.");
+		}
+
+		try
+		{
+			blocks.get(indexF2).setInput(inputs[i1], i2);
+		}
+		catch(IndexOutOfBoundsException e)
+		{
+			throw new FilterException(e.getMessage());
+		}
+
 		return;
 	}
 
