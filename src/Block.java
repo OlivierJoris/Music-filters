@@ -14,29 +14,31 @@ public class Block implements BlockInterface
 	private Filter mainFilter;
 
 	// Get a link to all the filters that are an input of the current Block.
-	private Vector<Filter> inputs;
+	private Block[] inputs = null;
 
 	/*
 	Get a link to all the outputs of the current Block which are acting as inputs of
 	other Blocks.
 	*/
-	private Vector<Filter> outputs;
+	private Block[] outputs = null;
 
-	private Vector<Boolean> inputsAvaibility;
+	private boolean[] inputsAvaibility;
 
 	/*********************************************
-		CONSTRUCTORS
+		CONSTRUCTOR
 	**********************************************/
-	public Block(Filter mainFilter)
+	public Block(Filter mainFilter) throws NullPointerException
 	{
+		if(mainFilter == null)
+			throw new NullPointerException("mainFilter pointer is equal to null in Block Constructor");
 		this.mainFilter = mainFilter;
-		inputs = new Vector<Filter>();
-		outputs = new Vector<Filter>();
-		inputsAvaibility = new Vector<Boolean>();
+		inputs = new Block[mainFilter.nbInputs()];
+		outputs = new Block[mainFilter.nbOutputs()];
+		inputsAvaibility = new boolean[mainFilter.nbInputs()];
 	}
 
 	/*********************************************
-		METHODS FROM FILTER
+		METHODS FROM FILTER INTERFACE
 	**********************************************/
 	public int nbInputs(){ return mainFilter.nbInputs();}
 
@@ -45,6 +47,24 @@ public class Block implements BlockInterface
 
 	public double[] computeOneStep(double[] input) throws FilterException
 	{
+
+		if(input.length != mainFilter.nbInputs())
+			throw new FilterException("Inavlid number of inputs.");
+
+
+		// Verifies that every i/o are connected
+		for(int i = 0; i < inputs.length; i++)
+		{
+			if(inputs[i] == null)
+				throw new FilterException("In computeOneStep : all inputs are NOT connected.");
+		}
+
+		for(int j = 0; j < outputs.length; j++)
+		{
+			if(outputs[j] == null)
+				throw new FilterException("In computeOneStep : all outputs are NOT connected.");
+		}
+
 		return mainFilter.computeOneStep(input);
 	}
 
@@ -57,44 +77,62 @@ public class Block implements BlockInterface
 		GETTERS
 	**********************************************/
 
-	public Filter getInput(int inputNumber)
+	public Filter getMainFilter(){ return mainFilter;}
+
+	public Block getInput(int inputNumber) throws IndexOutOfBoundsException
 	{
-		//return inputs.get(inputNumber);
-		return null;
+		if(inputNumber < 0 || inputNumber >= inputs.length)
+			throw new IndexOutOfBoundsException("inputNumber is out of index.");
+
+		return inputs[inputNumber];
 	}
 
-	public Filter getOutput(int outputNumber)
+	public Block getOutput(int outputNumber) throws IndexOutOfBoundsException
 	{
-		//return outputs.get(outputNumber);
-		return null;
+		if(outputNumber < 0 || outputNumber >= inputs.length)
+			throw new IndexOutOfBoundsException("outputNumber is out of index.");
+
+		return outputs[outputNumber];
 	}
 
-	public boolean getInputAvailability(int inputNumber)
+	public boolean getInputAvailability(int inputNumber) throws IndexOutOfBoundsException
 	{
-		//return inputsAvaibility.get(inputNumber);
-		return false;
+		if(inputNumber < 0 || inputNumber >= inputsAvaibility.length)
+			throw new IndexOutOfBoundsException("inputNumber is out of index.");
+
+		return inputsAvaibility[inputNumber];
 	}
 
 	/*********************************************
 		SETTERS
 	**********************************************/
 
-	public void addInput(Filter f)
+	public void setInput(Block f, int inputNumber) throws IndexOutOfBoundsException
 	{
-		//inputs.add(f);
-		//inputsAvaibility.add(false);
+		if(inputNumber < 0 || inputNumber >= inputs.length)
+			throw new IndexOutOfBoundsException("inputNumber is out of index.");
+
+		inputs[inputNumber] = f;
+
 		return;
 	}
 
-	public void addOutput(Filter f)
+	public void setOutput(Block f, int outputNumber) throws IndexOutOfBoundsException
 	{
-		//outputs.add(f);
+		if(outputNumber < 0 || outputNumber >= inputs.length)
+			throw new IndexOutOfBoundsException("outputNumber is out of index.");
+
+		outputs[outputNumber] = f;
+
 		return;
 	}
 
-	public void setInputAvailability(int inputNumber, boolean status)
+	public void setInputAvailability(int inputNumber, boolean status) throws IndexOutOfBoundsException
 	{
-		//inputsAvaibility.set(inputNumber, status);
+		if(inputNumber < 0 || inputNumber >= inputsAvaibility.length)
+			throw new IndexOutOfBoundsException("inputNumber is out of index.");
+
+		inputsAvaibility[inputNumber] = status;
 		return;
 	}
 

@@ -8,20 +8,20 @@ import be.uliege.montefiore.oop.audio.Filter;
 public interface BlockInterface extends Filter
 {
 	// Get the input inputNumber of a Block
-	Filter getInput(int inputNumber);
+	Block getInput(int inputNumber) throws IndexOutOfBoundsException;
 
 	// Get the output outputNumber of a Block
-	Filter getOutput(int outputNumber);
+	Block getOutput(int outputNumber) throws IndexOutOfBoundsException;
 
 	// Return a boolean mentionning if the input inputNumber is availible or not.
-	boolean getInputAvailability(int inputNumber);
+	boolean getInputAvailability(int inputNumber) throws IndexOutOfBoundsException;
 
 	// Allows to add an input to a Block ie connecting the input of a block to another one.
-	void addInput(Filter f);
+	void setInput(Block f, int inputNumber) throws IndexOutOfBoundsException;
 
 	// Allows to add an output to a Block ie connecting the block to the input of another one.
-	void addOutput(Filter f);
+	void setOutput(Block f, int outputNumber) throws IndexOutOfBoundsException;
 
 	// Modifying the availibility status of the input inputNumber.
-	void setInputAvailability(int inputNumber, boolean status);
+	void setInputAvailability(int inputNumber, boolean status) throws IndexOutOfBoundsException;
 }
