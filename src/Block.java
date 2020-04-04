@@ -47,23 +47,11 @@ public class Block implements BlockInterface
 
 	public double[] computeOneStep(double[] input) throws FilterException
 	{
+		if(!checkIOConnections())
+			throw new FilterException("Some IO of the filter are NOT connected.");
 
 		if(input.length != mainFilter.nbInputs())
 			throw new FilterException("Inavlid number of inputs.");
-
-
-		// Verifies that every i/o are connected
-		for(int i = 0; i < inputs.length; i++)
-		{
-			if(inputs[i] == null)
-				throw new FilterException("In computeOneStep : all inputs are NOT connected.");
-		}
-
-		for(int j = 0; j < outputs.length; j++)
-		{
-			if(outputs[j] == null)
-				throw new FilterException("In computeOneStep : all outputs are NOT connected.");
-		}
 
 		return mainFilter.computeOneStep(input);
 	}
@@ -134,6 +122,37 @@ public class Block implements BlockInterface
 
 		inputsAvaibility[inputNumber] = status;
 		return;
+	}
+
+	/**********************************************************
+
+	Others methods specific to the Block class.
+
+	**********************************************************/
+
+	// Function to verify that every IO of a Block is well connected.
+	public boolean checkIOConnections()
+	{
+		boolean everythingConnected = true;
+
+		// Verifies that every i/o are connected
+		for(int i = 0; i < inputs.length; i++)
+		{
+			if(inputs[i] == null)
+				everythingConnected = false;
+				System.err.println("Inputs number " + i + " issue");
+				return everythingConnected;
+		}
+
+		for(int j = 0; j < outputs.length; j++)
+		{
+			if(outputs[j] == null)
+				everythingConnected = false;
+				System.err.println("Outputs number " + j + " issue");
+				return everythingConnected;
+		}
+
+		return everythingConnected;
 	}
 
 }

@@ -17,13 +17,13 @@ public class CompositeFilter implements CompositeFilterInterface
 	private Vector<Block> blocks; // Storing all the filters
 
 	private Block[] inputs = null;
-	private Block[] outputs;
+	private Block[] outputs = null;
 
 	// Constructor
-	public CompositeFilter(int nbInputs, int nbOutputs)
+	public CompositeFilter(int numberInputs, int numberOutputs)
 	{
-		numberInputs = nbInputs;
-		numberOutputs = nbOutputs;
+		this.numberInputs = numberInputs;
+		this.numberOutputs = numberOutputs;
 		inputs = new Block[numberInputs];
 		outputs = new Block[numberOutputs];
 		blocks = new Vector<Block>();
@@ -41,16 +41,22 @@ public class CompositeFilter implements CompositeFilterInterface
 
 	public double[] computeOneStep(double[] input) throws FilterException
 	{
+		for(int i = 0; i < blocks.size(); i++)
+		{
+			if(!blocks.get(i).checkIOConnections())
+				throw new FilterException("Some IO of the block number " + i + " are NOT connnected.");
+		}
 
-		try 
+		/*
+		try
 		{
 			blocks.get(0).computeOneStep(input);
-		} 
-		catch(FilterException e) 
+		}
+		catch(FilterException e)
 		{
 			throw new FilterException(e.getMessage());
 		}
-
+		*/
 		return null;
 	}
 
