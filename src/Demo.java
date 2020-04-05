@@ -33,23 +33,13 @@ public class Demo
 		System.out.println("Detected input file : " + args[0]);
 		System.out.println("Detected output file : " + args[1]);
 
-		// Create the CompositeFilter
-
-		CompositeFilter cf = new CompositeFilter(1, 1);
-		if(cf == null)
-		{
-			System.err.println("Error while instanciating a new filter.");
-			System.exit(-1);
-		}
-		else
-		{
-			System.out.println("New CompositeFilter instanciated.");
-		}
-
-		// Creates the basic block
+		// Create the CompositeFilter & creates the basic block
 
 		try
 		{
+			CompositeFilter cf = new CompositeFilter(1, 1);
+			System.out.println("New CompositeFilter instanciated.");
+
 			Filter mult1 = new GainFilter(0.1);
 			Filter mult2 = new GainFilter(0.1);
 			Filter add = new AdditionFilter();
@@ -69,6 +59,7 @@ public class Demo
             cf.connectInputToBlock(0, mult2, 0);
             cf.connectBlockToBlock(mult1, 0, add, 0);
             cf.connectBlockToBlock(mult2, 0, add, 1);
+			//cf.connectBlockToOutput(add, 0, -1); // Should throw an error.
             cf.connectBlockToOutput(add, 0, 0);
 			//cf.connectBlockToBlock(mult1, 0, notInc, 0); //Should throw an error.
 

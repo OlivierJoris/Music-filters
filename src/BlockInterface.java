@@ -17,10 +17,10 @@ public interface BlockInterface extends Filter
 	boolean getInputAvailability(int inputNumber) throws IndexOutOfBoundsException;
 
 	// Allows to add an input to a Block ie connecting the input of a block to another one.
-	void setInput(Block f, int inputNumber) throws IndexOutOfBoundsException;
+	void setInput(Block f, int inputNumber) throws Exception;
 
 	// Allows to add an output to a Block ie connecting the block to the input of another one.
-	void setOutput(Block f, int outputNumber) throws IndexOutOfBoundsException;
+	void setOutput(Block f, int outputNumber) throws Exception;
 
 	// Modifying the availibility status of the input inputNumber.
 	void setInputAvailability(int inputNumber, boolean status) throws IndexOutOfBoundsException;

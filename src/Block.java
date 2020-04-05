@@ -30,8 +30,10 @@ public class Block implements BlockInterface
 	public Block(Filter mainFilter) throws NullPointerException
 	{
 		if(mainFilter == null)
-			throw new NullPointerException("mainFilter pointer is equal to null in Block Constructor");
+			throw new NullPointerException("mainFilter pointer is equal to null in Block Constructor.");
+
 		this.mainFilter = mainFilter;
+
 		inputs = new Block[mainFilter.nbInputs()];
 		outputs = new Block[mainFilter.nbOutputs()];
 		inputsAvaibility = new boolean[mainFilter.nbInputs()];
@@ -47,13 +49,28 @@ public class Block implements BlockInterface
 
 	public double[] computeOneStep(double[] input) throws FilterException
 	{
+
+		if(input == null)
+			throw new FilterException("Null input in computeOneStep().");
+
 		if(!checkIOConnections())
 			throw new FilterException("Some IO of the filter are NOT connected.");
 
 		if(input.length != mainFilter.nbInputs())
 			throw new FilterException("Inavlid number of inputs.");
 
-		return mainFilter.computeOneStep(input);
+		double[] out = null;
+
+		try
+		{
+			out = mainFilter.computeOneStep(input);
+		}
+		catch(FilterException e)
+		{
+			throw new FilterException(e.getMessage());
+		}
+
+		return out;
 	}
 
 	public void reset()
@@ -95,8 +112,11 @@ public class Block implements BlockInterface
 		SETTERS
 	**********************************************/
 
-	public void setInput(Block f, int inputNumber) throws IndexOutOfBoundsException
+	public void setInput(Block f, int inputNumber) throws Exception
 	{
+		if(f == null)
+			throw new NullPointerException("Block f is null in setInput.");
+
 		if(inputNumber < 0 || inputNumber >= inputs.length)
 			throw new IndexOutOfBoundsException("inputNumber is out of index.");
 
@@ -105,8 +125,11 @@ public class Block implements BlockInterface
 		return;
 	}
 
-	public void setOutput(Block f, int outputNumber) throws IndexOutOfBoundsException
+	public void setOutput(Block f, int outputNumber) throws Exception
 	{
+		if(f == null)
+			throw new NullPointerException("Block f is null in setOutput.");
+
 		if(outputNumber < 0 || outputNumber >= inputs.length)
 			throw new IndexOutOfBoundsException("outputNumber is out of index.");
 
@@ -142,7 +165,7 @@ public class Block implements BlockInterface
 			if(inputs[i] == null)
 			{
 				everythingConnected = false;
-				System.err.println("Inputs number " + i + " null");
+				System.err.println("Inputs number " + i + " null.");
 				return everythingConnected;
 			}
 
@@ -154,7 +177,7 @@ public class Block implements BlockInterface
 			if(outputs[j] == null)
 			{
 				everythingConnected = false;
-				System.err.println("Outputs number " + j + " null");
+				System.err.println("Outputs number " + j + " null.");
 				return everythingConnected;
 			}
 
