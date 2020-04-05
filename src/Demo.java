@@ -10,17 +10,22 @@ public class Demo
 {
 
 	// Method to check the number of arguments given to the program
-	static void checkParamters(int numberParamateres) throws ParametersException{
-		if(numberParamateres != 2){
+	static void checkParamters(int numberParamateres) throws ParametersException
+	{
+		if(numberParamateres != 2)
+		{
 			throw new ParametersException("Error in command-line arguments - required 2 arguments.\n usage: java -cp bin:audio.jar Demo <inputFile> <outputFile>");
 		}
 	}
 
 	public static void main(String args[]){
 
-		try{
+		try
+		{
 			checkParamters(args.length);
-		}catch(ParametersException e){
+		}
+		catch(ParametersException e)
+		{
 			System.err.println(e);
 			System.exit(-1);
 		}
@@ -31,16 +36,20 @@ public class Demo
 		// Create the CompositeFilter
 
 		CompositeFilter cf = new CompositeFilter(1, 1);
-		if(cf == null){
+		if(cf == null)
+		{
 			System.err.println("Error while instanciating a new filter.");
 			System.exit(-1);
-		}else{
+		}
+		else
+		{
 			System.out.println("New CompositeFilter instanciated.");
 		}
 
 		// Creates the basic block
 
-		try{
+		try
+		{
 			Filter mult1 = new GainFilter(0.1);
 			Filter mult2 = new GainFilter(0.1);
 			Filter add = new AdditionFilter();
@@ -69,7 +78,9 @@ public class Demo
 
 			TestAudioFilter.applyFilter(cf, args[0], args[1]);
 
-		}catch(Exception e){
+		}
+		catch(Exception e)
+		{
 			System.err.println(e);
 			System.exit(-1);
 		}

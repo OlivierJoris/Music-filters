@@ -139,7 +139,8 @@ public class Block implements BlockInterface
 		for(int i = 0; i < inputs.length; i++)
 		{
 			//System.err.println("Input n° " + i + " | value = " + inputs[i]);
-			if(inputs[i] == null){
+			if(inputs[i] == null)
+			{
 				everythingConnected = false;
 				System.err.println("Inputs number " + i + " null");
 				return everythingConnected;

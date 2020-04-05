@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------------------- *
- * Interface of a CompositeFilter which is an extension of the Block interface.
+ * Interface of a CompositeFilter which is an extension of the Filter interface.
  *
  * @authors Maxime GOFFART (180521) and Olivier JORIS (182113).
  * ------------------------------------------------------------------------- */

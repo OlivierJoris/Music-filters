@@ -73,7 +73,7 @@ public class CompositeFilter implements CompositeFilterInterface
 		return;
 	}
 	*/
-	
+
 	/**********************************************************
 
 	Methods from Filter
@@ -114,6 +114,11 @@ public class CompositeFilter implements CompositeFilterInterface
 
 	public void reset()
 	{
+		for(int i = 0; i < blocks.size(); i++)
+		{
+			blocks.get(i).reset();
+		}
+		
 		return;
 	}
 
@@ -152,7 +157,8 @@ public class CompositeFilter implements CompositeFilterInterface
 			System.out.println("The filter f2 is included in the CompositeFilter.");
 		}*/
 
-		try{
+		try
+		{
 
 			// Set the o1 output of f1 as the input i2 of f2
 			blocks.get(indexF2).setInput(blocks.get(indexF1), i2);
@@ -160,7 +166,9 @@ public class CompositeFilter implements CompositeFilterInterface
 			// Set the i2 input of f2 as the output o1 of f1
 			blocks.get(indexF1).setOutput(blocks.get(indexF2), o1);
 
-		}catch(IndexOutOfBoundsException e){
+		}
+		catch(IndexOutOfBoundsException e)
+		{
 			throw new FilterException(e.getMessage());
 		}
 
@@ -242,7 +250,8 @@ public class CompositeFilter implements CompositeFilterInterface
 
 		for(int i = 0; i < blocks.size(); i++)
 		{
-			if(blocks.get(i).getMainFilter() == f){
+			if(blocks.get(i).getMainFilter() == f)
+			{
 				included = i;
 				break;
 			}
