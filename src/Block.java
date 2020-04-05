@@ -138,18 +138,25 @@ public class Block implements BlockInterface
 		// Verifies that every i/o are connected
 		for(int i = 0; i < inputs.length; i++)
 		{
-			if(inputs[i] == null)
+			//System.err.println("Input n° " + i + " | value = " + inputs[i]);
+			if(inputs[i] == null){
 				everythingConnected = false;
-				System.err.println("Inputs number " + i + " issue");
+				System.err.println("Inputs number " + i + " null");
 				return everythingConnected;
+			}
+
 		}
 
 		for(int j = 0; j < outputs.length; j++)
 		{
+			//System.out.println("Output n° " + j + " | value = " + outputs[j]);
 			if(outputs[j] == null)
+			{
 				everythingConnected = false;
-				System.err.println("Outputs number " + j + " issue");
+				System.err.println("Outputs number " + j + " null");
 				return everythingConnected;
+			}
+
 		}
 
 		return everythingConnected;

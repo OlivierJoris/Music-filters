@@ -24,11 +24,56 @@ public class CompositeFilter implements CompositeFilterInterface
 	{
 		this.numberInputs = numberInputs;
 		this.numberOutputs = numberOutputs;
+
 		inputs = new Block[numberInputs];
+		for(int i = 0; i < numberInputs; i++)
+		{
+			inputs[i] = new Block(new CompositeIn());
+		}
+
 		outputs = new Block[numberOutputs];
+		for(int i = 0; i < numberOutputs; i++)
+		{
+			outputs[i] = new Block(new CompositeOut());
+		}
+
 		blocks = new Vector<Block>();
 	}
 
+
+
+	//** Methodes de debug -- A laisser pour l'instant **
+	/*
+	public void compositeIOcheck()
+	{
+		System.out.println("\n** IN of the composite filter **");
+		for(int i = 0; i < inputs.length; i++)
+		{
+			System.out.println("Input n° " + i + " | value = " + inputs[i]);
+		}
+
+		System.out.println("** OUT of the composite filter **");
+		for(int i = 0; i < outputs.length; i++)
+		{
+			System.out.println("Output n° " + i + " | value = " + outputs[i]);
+		}
+
+		return;
+	}
+
+	public void displayAllBlocks()
+	{
+		System.out.println("\n** blocks of the composite filter **");
+
+		for(int i = 0; i < blocks.size(); i++)
+		{
+			System.out.println("Block n° " + i + " | value = " + blocks.get(i));
+		}
+
+		return;
+	}
+	*/
+	
 	/**********************************************************
 
 	Methods from Filter
@@ -43,9 +88,16 @@ public class CompositeFilter implements CompositeFilterInterface
 	{
 		for(int i = 0; i < blocks.size(); i++)
 		{
+			//System.out.println("\n** checking block n° " + i + " **");
 			if(!blocks.get(i).checkIOConnections())
+			{
+				System.err.println("Some IO of the block number " + i + " are NOT connnected.");
 				throw new FilterException("Some IO of the block number " + i + " are NOT connnected.");
+			}
+
 		}
+
+		System.out.println("Every IO of each block are well connected.");
 
 		/*
 		try
@@ -85,26 +137,28 @@ public class CompositeFilter implements CompositeFilterInterface
 		if(indexF1 < 0)
 		{
 			throw new FilterException("The filter f1 is NOT included in the CompositeFilter.");
-		}else
+		}
+		/*else
 		{
 			System.out.println("The filter f1 is included in the CompositeFilter.");
-		}
+		}*/
 
 		if(indexF2 < 0)
 		{
 			throw new FilterException("The filter f2 is NOT included in the CompositeFilter.");
-		}else
+		}
+		/*else
 		{
 			System.out.println("The filter f2 is included in the CompositeFilter.");
-		}
+		}*/
 
 		try{
 
 			// Set the o1 output of f1 as the input i2 of f2
-			blocks.get(indexF2).setInput(blocks.get(indexF1).getOutput(o1), i2);
+			blocks.get(indexF2).setInput(blocks.get(indexF1), i2);
 
 			// Set the i2 input of f2 as the output o1 of f1
-			blocks.get(indexF1).setOutput(blocks.get(indexF2).getInput(i2), o1);
+			blocks.get(indexF1).setOutput(blocks.get(indexF2), o1);
 
 		}catch(IndexOutOfBoundsException e){
 			throw new FilterException(e.getMessage());
@@ -121,14 +175,18 @@ public class CompositeFilter implements CompositeFilterInterface
 		{
 			throw new FilterException("The filter f1 is NOT included in the CompositeFilter.");
 		}
-		else
+		/*else
 		{
 			System.out.println("The filter f1 is included in the CompositeFilter.");
-		}
+		}*/
 
 		try
 		{
-			outputs[o2] = blocks.get(indexF1).getOutput(o1);
+			// Set the ouput o1 of the filter f1 as the output o2 of the CompositeFilter
+			blocks.get(indexF1).setOutput(outputs[o2], o1);
+
+			// Set the output o2 of the CompositeFilter as the output o1 of the Filter f1
+			outputs[o2].setInput(blocks.get(indexF1).getOutput(o1), o2);
 		}
 		catch(IndexOutOfBoundsException e)
 		{
@@ -146,14 +204,18 @@ public class CompositeFilter implements CompositeFilterInterface
 		{
 			throw new FilterException("The filter f2 is NOT included in the CompositeFilter.");
 		}
-		else
+		/*else
 		{
 			System.out.println("The filter f2 is included in the CompositeFilter.");
-		}
+		}*/
 
 		try
 		{
+			// Set the input i2 of the filter f2 as the input i1 of the CompositeFilter
 			blocks.get(indexF2).setInput(inputs[i1], i2);
+
+			// Set the input i1 of the CompositeFilter as the input i2 of the filter f2
+			inputs[i1].setOutput(blocks.get(indexF2), i1);
 		}
 		catch(IndexOutOfBoundsException e)
 		{
