@@ -1,10 +1,10 @@
-/* ------------------------------------------------------------------------- *
- * Interface of a Block which is an extension of the Filter interface.
- *
- * @authors Maxime GOFFART (180521) and Olivier JORIS (182113).
- * ------------------------------------------------------------------------- */
 import be.uliege.montefiore.oop.audio.Filter;
 
+/**
+ * Interface of a Block which is an extension of the Filter interface.
+ *
+ * @author Maxime GOFFART (180521) and Olivier JORIS (182113).
+*/
 public interface BlockInterface extends Filter
 {
 	// Get the input inputNumber of a Block

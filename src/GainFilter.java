@@ -1,21 +1,21 @@
-/* ------------------------------------------------------------------------- *
- * Implementation of the GainFilter class.
- *
- * @authors Maxime GOFFART (180521) and Olivier JORIS (182113).
- * ------------------------------------------------------------------------- */
-
 import be.uliege.montefiore.oop.audio.Filter;
 import be.uliege.montefiore.oop.audio.FilterException;
 
+/**
+ * Implementation of the GainFilter class
+ *
+ * @author Maxime GOFFART (180521) and Olivier JORIS (182113)
+*/
 public class GainFilter implements Filter
 {
     private double gainValue; // The gain value of the GainFilter.
 
-    /* ------------------------------------------------------------------------- *
-     * Constructor method.
+    /**
+     * Constructor method
      *
-     * @param gainValue, the gain value of the GainFilter.
-     * ------------------------------------------------------------------------- */
+     * @param gainValue The gain value of the GainFilter
+	 * @throws FilterException The gainValue can't be smaller than 0
+    */
     public GainFilter(double gainValue) throws FilterException
     {
 		if(gainValue < 0)
@@ -24,29 +24,31 @@ public class GainFilter implements Filter
         this.gainValue = gainValue;
     }
 
-    /*
-    * Implementation of the nbInputs() and nbOutputs() methods : the GainFilter
-    only has 1 input and 1 output.
+	/**
+     * Returns the number of inputs
     */
    	public int nbInputs()
    	{
     	return 1;
    	}
 
+	/**
+     * Returns the number of outputs
+    */
    	public int nbOutputs()
    	{
     	return 1;
    	}
 
-    /* ------------------------------------------------------------------------- *
+    /**
      * Perfoms one step of computation of the Gainfilter.
      *
-     * @param input, an array containing n_I samples (one for each input).
+     * @param input An array containing n_I samples (one for each input).
      *
-     * @throws FilterException, inputs are incomplete.
+     * @throws FilterException Inputs are incomplete.
      *
-     * @return, an array with the resulting n_O samples (one for each output).
-     * ------------------------------------------------------------------------- */
+     * @return An array with the resulting n_O samples (one for each output).
+    */
     public double[] computeOneStep(double[] input) throws FilterException
     {
         if(input.length != nbInputs())
@@ -59,8 +61,8 @@ public class GainFilter implements Filter
         return output;
     }
 
-    /*
-    * reset() method as specified in the Filter interface.
+	/**
+     * Reset the DelayFilter
     */
     public void reset()
     {

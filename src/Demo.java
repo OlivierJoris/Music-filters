@@ -1,15 +1,20 @@
-/* ------------------------------------------------------------------------- *
- * Implementation of the Demo class.
- *
- * @authors Maxime GOFFART (180521) and Olivier JORIS (182113).
- * ------------------------------------------------------------------------- */
-
 import be.uliege.montefiore.oop.audio.*;
 
+/**
+ * Implementation of the Demo class.
+ *
+ * @author Maxime GOFFART (180521) and Olivier JORIS (182113).
+*/
 public class Demo
 {
 
-	// Method to check the number of arguments given to the program
+	/**
+	 * Method to check the number of arguments given to the program.
+	 *
+	 * @param numberParamateres The number of parameters.
+	 *
+	 * @throws ParametersException The number of arguments doesn't match what was expected.
+	*/
 	static void checkParamters(int numberParamateres) throws ParametersException
 	{
 		if(numberParamateres != 2)

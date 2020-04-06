@@ -1,11 +1,10 @@
-/* ------------------------------------------------------------------------- *
- * Interface of a CompositeFilter which is an extension of the Filter interface.
- *
- * @authors Maxime GOFFART (180521) and Olivier JORIS (182113).
- * ------------------------------------------------------------------------- */
-
 import be.uliege.montefiore.oop.audio.*;
 
+/**
+ * Interface of a CompositeFilter which is an extension of the Filter interface.
+ *
+ * @author Maxime GOFFART (180521) and Olivier JORIS (182113).
+*/
 public interface CompositeFilterInterface extends Filter
 {
 	// Adding a new block f to the composite filter

@@ -1,45 +1,45 @@
-/* ------------------------------------------------------------------------- *
- * Implementation of the AdditionFilter class.
- *
- * @authors Maxime GOFFART (180521) and Olivier JORIS (182113).
- * ------------------------------------------------------------------------- */
-
 import be.uliege.montefiore.oop.audio.Filter;
 import be.uliege.montefiore.oop.audio.FilterException;
 
+/**
+* Implementation of the AdditionFilter class
+* @author Maxime GOFFART (180521) and Olivier JORIS (182113)
+*/
 public class AdditionFilter implements Filter
 {
-    /* ------------------------------------------------------------------------- *
+    /**
      * Constructor method.
-     * ------------------------------------------------------------------------- */
+    */
     public AdditionFilter()
     {
         return;
     }
 
-    /*
-    * Implementation of the nbInputs() and nbOutputs() methods : An
-    AdditionFilter has 2 inputs and 1 output.
+    /**
+	 * Returns the number of inputs
     */
 	public int nbInputs()
 	{
     	return 2;
 	}
 
+	/**
+	 * Returns the number of outputs
+	*/
 	public int nbOutputs()
 	{
     	return 1;
    	}
 
-    /* ------------------------------------------------------------------------- *
-     * Perfoms one step of computation of the AdditionFilter.
+    /**
+     * Perfoms one step of computation of the AdditionFilter
      *
-     * @param input, an array containing n_I samples (one for each input).
+     * @param input An array containing n_I samples (one for each input)
      *
-     * @throws FilterException, inputs are incomplete.
+     * @throws FilterException Inputs are incomplete
      *
-     * @return, an array with the resulting n_O samples (one for each output).
-     * ------------------------------------------------------------------------- */
+     * @return An array with the resulting n_O samples (one for each output)
+    */
     public double[] computeOneStep(double[] input) throws FilterException
     {
         if(input.length != nbInputs())
@@ -54,6 +54,9 @@ public class AdditionFilter implements Filter
         return output;
     }
 
+	/**
+	 * Reset the Filter
+	*/
 	public void reset()
 	{
     	return;

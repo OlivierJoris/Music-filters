@@ -1,12 +1,11 @@
-/* ------------------------------------------------------------------------- *
- * Implementation of the DelayFilter class.
- *
- * @authors Maxime GOFFART (180521) and Olivier JORIS (182113).
- * ------------------------------------------------------------------------- */
-
 import be.uliege.montefiore.oop.audio.Filter;
 import be.uliege.montefiore.oop.audio.FilterException;
 
+/**
+ * Implementation of the DelayFilter class
+ *
+ * @author Maxime GOFFART (180521) and Olivier JORIS (182113)
+*/
 public class DelayFilter implements Filter
 {
 	private int delayValue; // The delay value of the DelayFilter.
@@ -14,11 +13,12 @@ public class DelayFilter implements Filter
     private double[] delayedSamples; /* An array to memorize the actual
                                         delayed samples */
 
-    /* ------------------------------------------------------------------------- *
-     * Constructor method.
+    /**
+     * Constructor method
      *
-     * @param delayValue, the delay value of the DelayFilter.
-     * ------------------------------------------------------------------------- */
+     * @param delayValue The delay value of delay
+	 * @throws FilterException delayValue can't be smaller than 0
+    */
     public DelayFilter(int delayValue) throws FilterException
     {
 		if(delayValue < 0)
@@ -35,29 +35,31 @@ public class DelayFilter implements Filter
 
     }
 
-	/*
-    * Implementation of the nbInputs() and nbOutputs methods : the DelayFilter
-    only has 1 input and 1 output.
+	/**
+     * Returns the number of inputs
     */
    	public int nbInputs()
    	{
     	return 1;
 	}
 
+	/**
+     * Returns the number of outputs
+    */
 	public int nbOutputs()
 	{
     	return 1;
 	}
 
-    /* ------------------------------------------------------------------------- *
+    /**
      * Perfoms one step of computation of the DelayFilter.
      *
-     * @param input, an array containing n_I samples (one for each input).
+     * @param input An array containing n_I samples (one for each input).
      *
-     * @throws FilterException, inputs are incomplete.
+     * @throws FilterException Inputs are incomplete.
      *
-     * @return, an array with the resulting n_O samples (one for each output).
-     * ------------------------------------------------------------------------- */
+     * @return An array with the resulting n_O samples (one for each output).
+    */
     public double[] computeOneStep(double[] input) throws FilterException
     {
         if(input.length != nbInputs())
@@ -76,8 +78,8 @@ public class DelayFilter implements Filter
         return output;
     }
 
-    /*
-    * reset() method as specified in the Filter interface.
+    /**
+     * Reset the DelayFilter
     */
 	public void reset()
     {

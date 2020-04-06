@@ -1,13 +1,12 @@
-/* ------------------------------------------------------------------------- *
- * Implementation of the CompositeFilter class which is an extension of
- * the Filter class.
- *
- * @authors Maxime GOFFART (180521) and Olivier JORIS (182113).
- * ------------------------------------------------------------------------- */
-
 import java.util.Vector;
 import be.uliege.montefiore.oop.audio.*;
 
+/**
+ * Implementation of the CompositeFilter class which is an extension of
+ * the Filter class.
+ *
+ * @author Maxime GOFFART (180521) and Olivier JORIS (182113).
+*/
 public class CompositeFilter implements CompositeFilterInterface
 {
 
@@ -22,7 +21,14 @@ public class CompositeFilter implements CompositeFilterInterface
 	// Saving the compute of each block
 	private double[][] computeOfEachBlock = null;
 
-	// Constructor
+	/**
+	 * Constructor
+	 *
+	 * @param numberInputs The number of inputs of the CompositeFilter.
+	 * @param numberOutputs The number of outputs of the CompositeFilter.
+	 *
+	 * @throws CompositeFilterException Error in the parameters.
+	*/
 	public CompositeFilter(int numberInputs, int numberOutputs) throws CompositeFilterException
 	{
 		if(numberInputs < 0)
@@ -47,8 +53,6 @@ public class CompositeFilter implements CompositeFilterInterface
 
 		blocks = new Vector<Block>();
 	}
-
-
 
 	//** Methodes de debug -- A laisser pour l'instant **
 	/*
@@ -93,16 +97,34 @@ public class CompositeFilter implements CompositeFilterInterface
 		return;
 	}
 
-	/**********************************************************
+	/* --------------------------------------------
 
 	Methods from Filter
 
-	**********************************************************/
+	-------------------------------------------- */
 
+	/**
+	 * Returns the number of inputs.
+	 *
+	 * @return The number of inputs.
+	*/
 	public int nbInputs(){ return numberInputs;}
 
+	/**
+	 * Returns the number of outputs.
+	 *
+	 * @return The number of outputs.
+	*/
 	public int nbOutputs(){ return numberOutputs;}
 
+	/**
+	 * Compute the CompositeFilter by starting at entryBlock.
+	 *
+	 * @param entryBlock The Block from which we start the computing?
+	 * @param input The input.
+	 *
+	 * @throws Exception An error occured.
+	*/
 	private void computeRecursive(Block entryBlock, double[] input) throws Exception
 	{
 
@@ -269,6 +291,15 @@ public class CompositeFilter implements CompositeFilterInterface
 		}
 	}
 
+	/**
+     * Perfoms one step of computation of the CompositeFilter.
+     *
+     * @param input An array containing n_I samples (one for each input).
+     *
+     * @throws FilterException An error occured.
+     *
+     * @return An array with the resulting n_O samples (one for each output).
+    */
 	public double[] computeOneStep(double[] input) throws FilterException
 	{
 		//System.out.println("\n** computation process **");
@@ -410,6 +441,9 @@ public class CompositeFilter implements CompositeFilterInterface
 		return computeOfEachBlock[indexBlockConnectToOutput];
 	}
 
+	/**
+	 * Reset the CompositeFilter.
+	*/
 	public void reset()
 	{
 		// Reset every block of the CompositeFilter
@@ -421,12 +455,19 @@ public class CompositeFilter implements CompositeFilterInterface
 		return;
 	}
 
-	/**********************************************************
+	/* ------------------------------------------------------------
 
 	Methods specific to the CompositeFilterInterface interface.
 
-	**********************************************************/
+	------------------------------------------------------------ */
 
+	/**
+	 * Add a Filter to the CompositeFilter.
+	 *
+	 * @param f The filter we wished to add.
+	 *
+	 * @throws NullPointerException Filter f is null.
+	*/
 	public void addBlock(Filter f) throws NullPointerException
 	{
 		if(f == null)
@@ -437,6 +478,16 @@ public class CompositeFilter implements CompositeFilterInterface
 		return;
 	}
 
+	/**
+	 * Connect the output o1 of the Filter f1 to the input i2 of the Filter f2.
+	 *
+	 * @param f1 One of the Filter we wish to connect.
+	 * @param o1 The output number of the Filter f1 we want to conenct.
+	 * @param f2 The other Filter we wish to connect.
+	 * @param i2 The input number of the Filter f2 we want to connect.
+	 *
+	 * @throws Exception An error occured.
+	*/
 	public void connectBlockToBlock(Filter f1, int o1, Filter f2, int i2) throws Exception
 	{
 
@@ -516,6 +567,15 @@ public class CompositeFilter implements CompositeFilterInterface
 		return;
 	}
 
+	/**
+	 * Connect the output o1 of the Filter f1 to the output o2 of the CompositeFilter.
+	 *
+	 * @param f1 The Filter we want to connect to the output of the CompositeFilter.
+	 * @param o1 The output number of the Filter f1 we want to connect.
+	 * @param o2 The output number of the CompositeFilter we want to connect.
+	 *
+	 * @throws Exception An error occured.
+	*/
 	public void connectBlockToOutput(Filter f1, int o1, int o2) throws Exception
 	{
 		if(f1 == null)
@@ -565,6 +625,15 @@ public class CompositeFilter implements CompositeFilterInterface
 		return;
 	}
 
+	/**
+	 * Connect the input i1 of the CompositeFilter to the input i2 of the Filter f2.
+	 *
+	 * @param i1 The input number of the CompositeFilter we want to connect.
+	 * @param f2 The Filter we want to connect to the input of the CompositeFilter.
+	 * @param i2 The input number of the Filter f2 we want to connect.
+	 *
+	 * @throws Exception An error occured.
+	*/
 	public void connectInputToBlock(int i1, Filter f2, int i2) throws Exception
 	{
 		if(f2 == null)
@@ -625,12 +694,19 @@ public class CompositeFilter implements CompositeFilterInterface
 		return;
 	}
 
-	/**********************************************************
+	/* ------------------------------------------------------------
 
 	Others methods specific to the CompositeFilter class.
 
-	**********************************************************/
+	------------------------------------------------------------ */
 
+	/**
+	 * Returns the index of a Block based on that Block.
+	 *
+	 * @param f The Block that we are considering.
+	 *
+	 * @return The index of the Block f.
+	*/
 	private int foundBlocks(Block f)
 	{
 		int index = -1;
@@ -647,10 +723,14 @@ public class CompositeFilter implements CompositeFilterInterface
 		return index;
 	}
 
-	/*
-		Function which returns true if a given filter is included in the
-		 composite filter.
-	 	Else, returns false.
+	/**
+	 * Returns if a given Filter is included in the CompositeFilter.
+	 *
+	 * @param f The Filter we are considering.
+	 *
+	 * @throws NullPointerException The Filter f is null.
+	 *
+	 * @return True if f is included in the composite filter. Else, false.
 	*/
 
 	private int foundFilter(Filter f) throws NullPointerException
@@ -672,6 +752,15 @@ public class CompositeFilter implements CompositeFilterInterface
 		return included;
 	}
 
+	/**
+	 * Returns if the input inputNumber of a given Block is connected to one of the input of the CompositeFilter.
+	 *
+	 * @param f The block we are considering.
+	 * @param inputNumber The input of the Block we are considering.
+	 *
+	 * @return True if the input inputNumber of the Block f is connected to one of the input of the CompositeFilter.
+	 * Else, false.
+	*/
 	private boolean connectedToInputOfComposite(Block f, int inputNumber)
 	{
 		boolean connectionToInputOfComposite = false;
