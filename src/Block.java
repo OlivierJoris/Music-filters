@@ -67,7 +67,7 @@ public class Block implements BlockInterface
 		}
 		catch(FilterException e)
 		{
-			throw new FilterException(e.getMessage());
+			throw new FilterException("Unable to compute filter " + mainFilter + "inside Block " + this);
 		}
 
 		return out;
@@ -92,6 +92,11 @@ public class Block implements BlockInterface
 		return inputs[inputNumber];
 	}
 
+	public Block[] getAllInputs()
+	{
+		return inputs;
+	}
+
 	public Block getOutput(int outputNumber) throws IndexOutOfBoundsException
 	{
 		if(outputNumber < 0 || outputNumber >= inputs.length)
@@ -100,12 +105,56 @@ public class Block implements BlockInterface
 		return outputs[outputNumber];
 	}
 
+	// Function to get the input numbet of a Block based on the Block f which
+	// is connected to the considered Block.
+	public int getOutputNumber(Block f)
+	{
+		int outputNumber = -1;
+
+		for(int i = 0; i < inputs.length; i++)
+		{
+			if(inputs[i] == f)
+			{
+				outputNumber = i;
+				return outputNumber;
+			}
+		}
+
+		return outputNumber;
+	}
+
+	public int getOutputLength()
+	{
+		return outputs.length;
+	}
+
 	public boolean getInputAvailability(int inputNumber) throws IndexOutOfBoundsException
 	{
 		if(inputNumber < 0 || inputNumber >= inputsAvaibility.length)
 			throw new IndexOutOfBoundsException("inputNumber is out of index.");
 
 		return inputsAvaibility[inputNumber];
+	}
+
+	public boolean[] getAllAvailabilities()
+	{
+		return inputsAvaibility;
+	}
+
+	public boolean checkInputsAvailabilities()
+	{
+		boolean allAvailable = true;
+
+		for(int i = 0; i < inputsAvaibility.length; i++)
+		{
+			if(inputsAvaibility[i] == false)
+			{
+				allAvailable = false;
+				return allAvailable;
+			}
+		}
+
+		return allAvailable;
 	}
 
 	/*********************************************

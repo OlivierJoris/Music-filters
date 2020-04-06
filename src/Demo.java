@@ -32,6 +32,7 @@ public class Demo
 
 		System.out.println("Detected input file : " + args[0]);
 		System.out.println("Detected output file : " + args[1]);
+		System.out.println();
 
 		// Create the CompositeFilter & creates the basic block
 
@@ -63,7 +64,7 @@ public class Demo
             cf.connectBlockToOutput(add, 0, 0);
 			//cf.connectBlockToBlock(mult1, 0, notInc, 0); //Should throw an error.
 
-			//cf.displayAllBlocks();
+			cf.displayAllBlocks();
 
 			//cf.compositeIOcheck();
 
