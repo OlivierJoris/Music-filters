@@ -97,6 +97,11 @@ public class Block implements BlockInterface
 		return inputs;
 	}
 
+	public int getInputLength()
+	{
+		return inputs.length;
+	}
+
 	public Block getOutput(int outputNumber) throws IndexOutOfBoundsException
 	{
 		if(outputNumber < 0 || outputNumber >= inputs.length)
@@ -194,6 +199,20 @@ public class Block implements BlockInterface
 
 		inputsAvaibility[inputNumber] = status;
 		return;
+	}
+
+	// Function to reinitiate all the values of inputsAvaibility
+	public void reinitiateInputsAvaibilities()
+	{
+		for(int i = 0; i < inputsAvaibility.length; i++)
+		{
+			if(inputs[i].getMainFilter() instanceof DelayFilter)
+			{
+				inputsAvaibility[i] = true;
+			}
+			else
+				inputsAvaibility[i] = false;
+		}
 	}
 
 	/**********************************************************

@@ -106,173 +106,172 @@ public class CompositeFilter implements CompositeFilterInterface
 	private void computeRecursive(Block entryBlock, double[] input) throws Exception
 	{
 
-		System.out.println("Concerned block " + entryBlock);
+		//System.out.println("Concerned block " + entryBlock);
 
 		// In the case that some inputs are not available, recursive call on
 		// the blocks which act as inputs and that are not available.
 		if(!entryBlock.checkInputsAvailabilities())
 		{
-			System.out.println("Some inputs are not available.");
+			//System.out.println("Some inputs are not available.");
 			boolean[] availabilities = entryBlock.getAllAvailabilities();
 
 			for(int i = 0; i < availabilities.length; i++)
 			{
 				if(!availabilities[i])
 				{
-					System.out.println("Recursive call on " + entryBlock.getInput(i));
+					//System.out.println("Recursive call on " + entryBlock.getInput(i));
 					computeRecursive(entryBlock.getInput(i), input);
 				}
 			}
 		}
-		else // Compute the Block entryBlock
-		{
 
-			//Found the index of the Block entryBlock
-			int indexEntryBlock = foundBlocks(entryBlock);
-			System.out.println("Index of the entryBlock " + indexEntryBlock);
+		// Compute the Block entryBlock
+
+		//Found the index of the Block entryBlock
+		int indexEntryBlock = foundBlocks(entryBlock);
+		//System.out.println("Index of the entryBlock " + indexEntryBlock);
+		if(indexEntryBlock < 0)
+		{
+			System.err.println("Index of the entryBlocl can NOT be < 0");
+			System.exit(-1);
+		}
+
+		// If the block is connected directly to the input of the composite filter.
+		if(connectedToInputOfComposite(entryBlock, 0))
+		{
+			//System.out.println("Block " + entryBlock + " is directly connected to the output of the CompositeFilter.");
+			// Try to compute the output of that block.
+			try
+			{
+				computeOfEachBlock[indexEntryBlock] = entryBlock.computeOneStep(input);
+			}
+			catch(Exception e)
+			{
+				System.err.println("Error while computing the block " + entryBlock);
+				throw new Exception("Error while computing the block " + entryBlock);
+			}
+
+			// Try to update the availability of each input of Blocks that are connected to it.
+			for(int i = 0; i < entryBlock.getOutputLength(); i++)
+			{
+				Block tmp;
+				int outputNumber = -1;
+				try
+				{
+					tmp = entryBlock.getOutput(i);
+				}
+				catch(IndexOutOfBoundsException e)
+				{
+					throw new IndexOutOfBoundsException("Unable to get the output " + i + " of the Block " + entryBlock);
+				}
+
+				outputNumber = tmp.getOutputNumber(entryBlock);
+				if(outputNumber < 0)
+				{
+					System.err.println("Unable to retrieve outputNumber for block " + entryBlock);
+					throw new Exception("Unable to retrieve outputNumber for block " + entryBlock);
+				}
+
+				try
+				{
+					tmp.setInputAvailability(outputNumber, true);
+				}
+				catch(IndexOutOfBoundsException e)
+				{
+					System.err.println("Unable to set the availability for outputNumber " + outputNumber + " of the block " + tmp);
+					throw new IndexOutOfBoundsException("Unable to set the availability for outputNumber " + outputNumber + " of the block " + tmp);
+				}
+			}
+			//System.out.println("Result = " + computeOfEachBlock[indexEntryBlock][0]);
+			//System.out.println("Computation of block " + entryBlock + " went fine.\n");
+		}
+		else //If the block is NOT connected directly to the input of the composite filter.
+		{
+			//System.out.println("entryBlock = " + entryBlock + " enters the case which NO direct connection.");
+			// First we need to retract all the Blocks that are directly connected to the input
+			// of entryBlock.
+			Block[] tmpAll = entryBlock.getAllInputs();
+
+			// We retract all the computed value of each input of the entryBlock.
+			double[] inputsValue = new double[tmpAll.length];
+
+			int tmpIndex = -1;
+
+			for(int i = 0; i < tmpAll.length; i++)
+			{
+				try
+				{
+					tmpIndex = foundBlocks(tmpAll[i]);
+				}
+				catch(NullPointerException e)
+				{
+					System.err.println("Block null in foundBlocks for Block " + tmpAll[i] + " while processing Block " + entryBlock);
+					throw new NullPointerException("Block null in foundBlocks for Block " + tmpAll[i] + " while processing Block " + entryBlock);
+				}
+
+				if(tmpIndex < 0)
+				{
+					System.err.println("tmpIndex < 0 for Block " + tmpAll[i] + " while processing Block " + entryBlock);
+					throw new Exception("tmpIndex < 0 for Block " + tmpAll[i] + " while processing Block " + entryBlock);
+				}
+
+				inputsValue[i] = computeOfEachBlock[tmpIndex][0];
+			}
+
 			if(indexEntryBlock < 0)
 			{
 				System.err.println("Index of the entryBlocl can NOT be < 0");
 				System.exit(-1);
 			}
 
-			// If the block is connected directly to the input of the composite filter.
-			if(connectedToInputOfComposite(entryBlock, 0))
+			try
 			{
-				System.out.println("Block " + entryBlock + " is directly connected to the output of the CompositeFilter.");
-				// Try to compute the output of that block.
+				computeOfEachBlock[indexEntryBlock] = entryBlock.computeOneStep(inputsValue);
+			}
+			catch(Exception e)
+			{
+				System.err.println("Error while computing the block " + entryBlock);
+				throw new Exception("Error while computing the block " + entryBlock);
+			}
+
+			// Try to update the availability of each input of Blocks that are connected to entryBlock.
+			for(int i = 0; i < entryBlock.getOutputLength(); i++)
+			{
+				Block tmp;
+				int outputNumber = -1;
 				try
 				{
-					computeOfEachBlock[indexEntryBlock] = entryBlock.computeOneStep(input);
+					tmp = entryBlock.getOutput(i);
 				}
-				catch(Exception e)
+				catch(IndexOutOfBoundsException e)
 				{
-					System.err.println("Error while computing the block " + entryBlock);
-					throw new Exception("Error while computing the block " + entryBlock);
-				}
-
-				// Try to update the availability of each input of Blocks that are connected to it.
-				for(int i = 0; i < entryBlock.getOutputLength(); i++)
-				{
-					Block tmp;
-					int outputNumber = -1;
-					try
-					{
-						tmp = entryBlock.getOutput(i);
-					}
-					catch(IndexOutOfBoundsException e)
-					{
-						throw new IndexOutOfBoundsException("Unable to get the output " + i + " of the Block " + entryBlock);
-					}
-
-					outputNumber = tmp.getOutputNumber(entryBlock);
-					if(outputNumber < 0)
-					{
-						System.err.println("Unable to retrieve outputNumber for block " + entryBlock);
-						throw new Exception("Unable to retrieve outputNumber for block " + entryBlock);
-					}
-
-					try
-					{
-						tmp.setInputAvailability(outputNumber, true);
-					}
-					catch(IndexOutOfBoundsException e)
-					{
-						System.err.println("Unable to set the availability for outputNumber " + outputNumber + " of the block " + tmp);
-						throw new IndexOutOfBoundsException("Unable to set the availability for outputNumber " + outputNumber + " of the block " + tmp);
-					}
-				}
-				System.out.println("Result = " + computeOfEachBlock[indexEntryBlock][0]);
-				System.out.println("Computation of block " + entryBlock + " went fine.\n");
-			}
-			else //If the block is NOT connected directly to the input of the composite filter.
-			{
-				System.out.println("entryBlock = " + entryBlock + " enters the case which NO direct connection.");
-				// First we need to retract all the Blocks that are directly connected to the input
-				// of entryBlock.
-				Block[] tmpAll = entryBlock.getAllInputs();
-
-				// We retract all the computed value of each input of the entryBlock.
-				double[] inputsValue = new double[tmpAll.length];
-
-				int tmpIndex = -1;
-
-				for(int i = 0; i < tmpAll.length; i++)
-				{
-					try
-					{
-						tmpIndex = foundBlocks(tmpAll[i]);
-					}
-					catch(NullPointerException e)
-					{
-						System.err.println("Block null in foundBlocks for Block " + tmpAll[i] + " while processing Block " + entryBlock);
-						throw new NullPointerException("Block null in foundBlocks for Block " + tmpAll[i] + " while processing Block " + entryBlock);
-					}
-
-					if(tmpIndex < 0)
-					{
-						System.out.println("tmpIndex < 0 for Block " + tmpAll[i] + " while processing Block " + entryBlock);
-						throw new Exception("tmpIndex < 0 for Block " + tmpAll[i] + " while processing Block " + entryBlock);
-					}
-
-					inputsValue[i] = computeOfEachBlock[tmpIndex][0];
+					throw new IndexOutOfBoundsException(e.getMessage());
 				}
 
-				if(indexEntryBlock < 0)
+				outputNumber = tmp.getOutputNumber(entryBlock);
+				if(outputNumber < 0)
 				{
-					System.err.println("Index of the entryBlocl can NOT be < 0");
-					System.exit(-1);
+					System.err.println("Unable to retrieve outputNumber for block " + entryBlock);
+					throw new Exception("Unable to retrieve outputNumber for block " + entryBlock);
 				}
 
 				try
 				{
-					computeOfEachBlock[indexEntryBlock] = entryBlock.computeOneStep(inputsValue);
+					tmp.setInputAvailability(outputNumber, true);
 				}
-				catch(Exception e)
+				catch(IndexOutOfBoundsException e)
 				{
-					System.err.println("Error while computing the block " + entryBlock);
-					throw new Exception("Error while computing the block " + entryBlock);
+					System.err.println("Unable to set the availability for outputNumber " + outputNumber + " of the block " + tmp);
+					throw new IndexOutOfBoundsException("Unable to set the availability for outputNumber " + outputNumber + " of the block " + tmp);
 				}
-
-				// Try to update the availability of each input of Blocks that are connected to entryBlock.
-				for(int i = 0; i < entryBlock.getOutputLength(); i++)
-				{
-					Block tmp;
-					int outputNumber = -1;
-					try
-					{
-						tmp = entryBlock.getOutput(i);
-					}
-					catch(IndexOutOfBoundsException e)
-					{
-						throw new IndexOutOfBoundsException(e.getMessage());
-					}
-
-					outputNumber = tmp.getOutputNumber(entryBlock);
-					if(outputNumber < 0)
-					{
-						System.err.println("Unable to retrieve outputNumber for block " + entryBlock);
-						throw new Exception("Unable to retrieve outputNumber for block " + entryBlock);
-					}
-
-					try
-					{
-						tmp.setInputAvailability(outputNumber, true);
-					}
-					catch(IndexOutOfBoundsException e)
-					{
-						System.err.println("Unable to set the availability for outputNumber " + outputNumber + " of the block " + tmp);
-						throw new IndexOutOfBoundsException("Unable to set the availability for outputNumber " + outputNumber + " of the block " + tmp);
-					}
-				}
-				System.out.println("Computation of block not directly connected " + entryBlock + " went fine.\n");
 			}
+			//System.out.println("Computation of block not directly connected " + entryBlock + " went fine.\n");
 		}
 	}
 
 	public double[] computeOneStep(double[] input) throws FilterException
 	{
-		System.out.println("\n** computation process **");
+		//System.out.println("\n** computation process **");
 		if(input == null)
 			throw new FilterException("Null input in computeOneStep().");
 
@@ -289,7 +288,7 @@ public class CompositeFilter implements CompositeFilterInterface
 
 		}
 
-		System.out.println("Every IO of each block are well connected.");
+		//System.out.println("Every IO of each block are well connected.");
 
 		// Getting all the blocks that are directly connected to the output of the CompositeFilter
 		Vector<Block> directlyConnectedToOutput = new Vector<Block>();
@@ -308,7 +307,7 @@ public class CompositeFilter implements CompositeFilterInterface
 				}
 				catch(Exception e)
 				{
-					System.out.println("Error while computing the path that started at " + outputs[i].getInput(j));
+					System.err.println("Error while computing the path that started at " + outputs[i].getInput(j));
 					throw new FilterException("Error while computing the path that started at " + outputs[i].getInput(j));
 				}
 
@@ -316,21 +315,21 @@ public class CompositeFilter implements CompositeFilterInterface
 		}
 
 		// Display all those blocks
-		System.out.println("\n** blocks that are directly connected to the output of the composite **");
+		//System.out.println("\n** blocks that are directly connected to the output of the composite **");
 
-		for(int i = 0; i < directlyConnectedToOutput.size(); i++)
+		/*for(int i = 0; i < directlyConnectedToOutput.size(); i++)
 		{
 			System.out.println(directlyConnectedToOutput.get(i));
-		}
+		}*/
 
-		System.out.println();
+		//System.out.println();
 
 		computeOfEachBlock = new double[blocks.size()][];
 
 		// Compute the CompositeFilter by starting at every block that are connected to the output
 		// of the CompositeFilter.
 
-		System.out.println("Number of blocks directed connected to the output of the CompositeFilter = " + directlyConnectedToOutput.size());
+		//System.out.println("Number of blocks directed connected to the output of the CompositeFilter = " + directlyConnectedToOutput.size());
 		for(int i = 0; i < directlyConnectedToOutput.size(); i++)
 		{
 			try
@@ -350,43 +349,61 @@ public class CompositeFilter implements CompositeFilterInterface
 		{
 			System.err.println("Error : indexBlockConnectToOutput can NOT be < 0");
 			throw new FilterException("Error : indexBlockConnectToOutput can NOT be < 0");
-		}else
+		}
+		/*else
 		{
 			System.out.println("indexBlockConnectToOutput for return " + indexBlockConnectToOutput);
-		}
+		}*/
 
-		System.out.println("** Availabilities of add **");
+		/*System.out.println("** Availabilities of add **");
 		boolean[] availabilitiesAdd = blocks.get(2).getAllAvailabilities();
 		for(int i = 0; i < availabilitiesAdd.length; i++)
 		{
 			System.out.println(availabilitiesAdd[i]);
 		}
-		System.out.println("");
+		System.out.println("");*/
 
 		if(computeOfEachBlock[0] == null)
 		{
-			System.out.println("Error for computeOfEachBlock[0]");
+			System.err.println("Error for computeOfEachBlock[0]");
 		}
 		else
-		{
+		/*{
 			System.out.println("Fine for computeOfEachBlock[0]");
-		}
+		}*/
 
 		if(computeOfEachBlock[1] == null)
 		{
-			System.out.println("Error for computeOfEachBlock[1]");
+			System.err.println("Error for computeOfEachBlock[1]");
 		}
-		else
+		/*else
 		{
 			System.out.println("Fine for computeOfEachBlock[1]");
-		}
+		}*/
 
 
 		if(computeOfEachBlock[indexBlockConnectToOutput] == null)
 		{
 			System.err.println("Error final step of computeOneStep");
-		}else{
+		}/*else{
 			System.out.println("Seems fine");
+		}*/
+
+		for(int i = 0; i < blocks.size(); i++)
+		{
+			// Reset all the inputs avaibilities for the Block i.
+			blocks.get(i).reinitiateInputsAvaibilities();
+
+			// If one block is directed connected to the input of the composite
+			// filter than its input is always available.
+			for(int j = 0; j < blocks.get(i).getInputLength(); j++)
+			{
+				if(connectedToInputOfComposite(blocks.get(i), j))
+				{
+					blocks.get(i).setInputAvailability(j, true);
+				}
+			}
+
 		}
 
 
@@ -465,7 +482,6 @@ public class CompositeFilter implements CompositeFilterInterface
 
 		try
 		{
-
 			// Set the o1 output of f1 as the input i2 of f2
 			blocks.get(indexF2).setInput(blocks.get(indexF1), i2);
 

@@ -45,7 +45,7 @@ public class AdditionFilter implements Filter
         if(input.length != nbInputs())
             throw new FilterException("Inputs are incomplete");
 
-        System.out.println(input.length);
+        //System.out.println(input.length);
 
         double[] output = new double[1];
 
