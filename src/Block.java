@@ -315,12 +315,15 @@ public class Block implements BlockInterface
 	{
 		for(int i = 0; i < inputsAvaibility.length; i++)
 		{
+			/*
 			if(inputs[i].getMainFilter() instanceof DelayFilter)
 			{
 				inputsAvaibility[i] = true;
 			}
 			else
 				inputsAvaibility[i] = false;
+			*/
+			inputsAvaibility[i] = false;
 		}
 	}
 

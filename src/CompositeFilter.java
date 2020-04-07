@@ -217,6 +217,13 @@ public class CompositeFilter implements CompositeFilterInterface
 			// We retract all the computed value of each input of the entryBlock.
 			double[] inputsValue = new double[tmpAll.length];
 
+			boolean[] tmpAvaibility = entryBlock.getAllAvailabilities();
+			//System.out.println("tmpAvaibility :");
+			/*for(int i = 0; i < tmpAvaibility.length; i++)
+			{
+				System.out.println(tmpAvaibility[i]);
+			}*/
+
 			int tmpIndex = -1;
 
 			for(int i = 0; i < tmpAll.length; i++)
@@ -303,6 +310,7 @@ public class CompositeFilter implements CompositeFilterInterface
 	public double[] computeOneStep(double[] input) throws FilterException
 	{
 		//System.out.println("\n** computation process **");
+
 		if(input == null)
 			throw new FilterException("Null input in computeOneStep().");
 
@@ -347,15 +355,26 @@ public class CompositeFilter implements CompositeFilterInterface
 
 		// Display all those blocks
 		//System.out.println("\n** blocks that are directly connected to the output of the composite **");
-
-		/*for(int i = 0; i < directlyConnectedToOutput.size(); i++)
+		/*
+		for(int i = 0; i < directlyConnectedToOutput.size(); i++)
 		{
 			System.out.println(directlyConnectedToOutput.get(i));
-		}*/
+		}
+		*/
 
 		//System.out.println();
 
 		computeOfEachBlock = new double[blocks.size()][];
+
+		for(int i = 0; i < blocks.size(); i++)
+		{
+			// If one Block is a DelayFilter, its first ouput will be 0
+			if(blocks.get(i).getMainFilter() instanceof DelayFilter)
+			{
+				computeOfEachBlock[i] = new double[1]; // A delay filter has always 1 output.
+				computeOfEachBlock[i][0] = 0;
+			}
+		}
 
 		// Compute the CompositeFilter by starting at every block that are connected to the output
 		// of the CompositeFilter.
@@ -374,6 +393,8 @@ public class CompositeFilter implements CompositeFilterInterface
 
 		}
 
+		// TO DO : To restrictive - if a composite as more than one output
+		// -- need to be modified.
 		int indexBlockConnectToOutput = foundBlocks(directlyConnectedToOutput.get(0));
 
 		if(indexBlockConnectToOutput < 0)
@@ -420,6 +441,7 @@ public class CompositeFilter implements CompositeFilterInterface
 			System.out.println("Seems fine");
 		}*/
 
+		// Restoring every input availability.
 		for(int i = 0; i < blocks.size(); i++)
 		{
 			// Reset all the inputs avaibilities for the Block i.
