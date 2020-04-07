@@ -134,6 +134,13 @@ public class CompositeFilter implements CompositeFilterInterface
 		// the blocks which act as inputs and that are not available.
 		if(!entryBlock.checkInputsAvailabilities())
 		{
+			//boolean[] tmp = entryBlock.getAllAvailabilities();
+			//System.out.println("Inputs availability of block " + entryBlock);
+			/*for(int j = 0; j < tmp.length; j++)
+			{
+				System.out.println(tmp[j]);
+			}*/
+
 			//System.out.println("Some inputs are not available.");
 			boolean[] availabilities = entryBlock.getAllAvailabilities();
 
@@ -154,33 +161,75 @@ public class CompositeFilter implements CompositeFilterInterface
 		//System.out.println("Index of the entryBlock " + indexEntryBlock);
 		if(indexEntryBlock < 0)
 		{
-			System.err.println("Index of the entryBlocl can NOT be < 0");
+			System.err.println("Index of the entryBlock can NOT be < 0");
 			System.exit(-1);
 		}
 
-		// If the block is connected directly to the input of the composite filter.
-		if(connectedToInputOfComposite(entryBlock, 0))
-		{
-			//System.out.println("Block " + entryBlock + " is directly connected to the output of the CompositeFilter.");
-			// Try to compute the output of that block.
-			try
-			{
-				computeOfEachBlock[indexEntryBlock] = entryBlock.computeOneStep(input);
-			}
-			catch(Exception e)
-			{
-				System.err.println("Error while computing the block " + entryBlock);
-				throw new Exception("Error while computing the block " + entryBlock);
-			}
+		// First we need to retract all the Blocks that are directly connected to the input
+		// of entryBlock.
+		Block[] tmpAll = entryBlock.getAllInputs();
 
-			// Try to update the availability of each input of Blocks that are connected to it.
-			for(int i = 0; i < entryBlock.getOutputLength(); i++)
+		// We retract all the computed value of each input of the entryBlock.
+		double[] inputsValue = new double[tmpAll.length];
+
+		//boolean[] tmpAvaibility = entryBlock.getAllAvailabilities();
+		//System.out.println("tmpAvaibility :");
+		/*for(int i = 0; i < tmpAvaibility.length; i++)
+		{
+			System.out.println(tmpAvaibility[i]);
+		}*/
+
+		int tmpIndex = -1;
+
+		for(int i = 0; i < tmpAll.length; i++)
+		{
+			if(isCompositeInput(tmpAll[i]))
 			{
-				Block tmp;
-				int outputNumber = -1;
+				inputsValue[i] = input[0];
+			}
+			else
+			{
 				try
 				{
-					tmp = entryBlock.getOutput(i);
+					tmpIndex = foundBlocks(tmpAll[i]);
+				}
+				catch(NullPointerException e)
+				{
+					System.err.println("Block null in foundBlocks for Block " + tmpAll[i] + " while processing Block " + entryBlock);
+					throw new NullPointerException("Block null in foundBlocks for Block " + tmpAll[i] + " while processing Block " + entryBlock);
+				}
+
+				if(tmpIndex < 0)
+				{
+					System.err.println("tmpIndex < 0 for Block " + tmpAll[i] + " while processing Block " + entryBlock);
+					throw new Exception("tmpIndex < 0 for Block " + tmpAll[i] + " while processing Block " + entryBlock);
+				}
+
+				inputsValue[i] = computeOfEachBlock[tmpIndex][0];
+			}
+		}
+
+		try
+		{
+			computeOfEachBlock[indexEntryBlock] = entryBlock.computeOneStep(inputsValue);
+		}
+		catch(Exception e)
+		{
+			System.err.println("Error while computing the block " + entryBlock);
+			throw new Exception("Error while computing the block " + entryBlock);
+		}
+
+		// Try to update the availability of each input of Blocks that are connected to entryBlock.
+		for(int i = 0; i < entryBlock.getOutputLength(); i++)
+		{
+			Block tmp;
+			int outputNumber = -1;
+
+			for(int k = 0; k < entryBlock.getOutputLengthEmbedded(i); k++)
+			{
+				try
+				{
+					tmp = entryBlock.getOutput(i, k);
 				}
 				catch(IndexOutOfBoundsException e)
 				{
@@ -204,98 +253,9 @@ public class CompositeFilter implements CompositeFilterInterface
 					throw new IndexOutOfBoundsException("Unable to set the availability for outputNumber " + outputNumber + " of the block " + tmp);
 				}
 			}
-			//System.out.println("Result = " + computeOfEachBlock[indexEntryBlock][0]);
-			//System.out.println("Computation of block " + entryBlock + " went fine.\n");
 		}
-		else //If the block is NOT connected directly to the input of the composite filter.
-		{
-			//System.out.println("entryBlock = " + entryBlock + " enters the case which NO direct connection.");
-			// First we need to retract all the Blocks that are directly connected to the input
-			// of entryBlock.
-			Block[] tmpAll = entryBlock.getAllInputs();
+		//System.out.println("Computation of block not directly connected " + entryBlock + " went fine.\n");
 
-			// We retract all the computed value of each input of the entryBlock.
-			double[] inputsValue = new double[tmpAll.length];
-
-			boolean[] tmpAvaibility = entryBlock.getAllAvailabilities();
-			//System.out.println("tmpAvaibility :");
-			/*for(int i = 0; i < tmpAvaibility.length; i++)
-			{
-				System.out.println(tmpAvaibility[i]);
-			}*/
-
-			int tmpIndex = -1;
-
-			for(int i = 0; i < tmpAll.length; i++)
-			{
-				try
-				{
-					tmpIndex = foundBlocks(tmpAll[i]);
-				}
-				catch(NullPointerException e)
-				{
-					System.err.println("Block null in foundBlocks for Block " + tmpAll[i] + " while processing Block " + entryBlock);
-					throw new NullPointerException("Block null in foundBlocks for Block " + tmpAll[i] + " while processing Block " + entryBlock);
-				}
-
-				if(tmpIndex < 0)
-				{
-					System.err.println("tmpIndex < 0 for Block " + tmpAll[i] + " while processing Block " + entryBlock);
-					throw new Exception("tmpIndex < 0 for Block " + tmpAll[i] + " while processing Block " + entryBlock);
-				}
-
-				inputsValue[i] = computeOfEachBlock[tmpIndex][0];
-			}
-
-			if(indexEntryBlock < 0)
-			{
-				System.err.println("Index of the entryBlocl can NOT be < 0");
-				System.exit(-1);
-			}
-
-			try
-			{
-				computeOfEachBlock[indexEntryBlock] = entryBlock.computeOneStep(inputsValue);
-			}
-			catch(Exception e)
-			{
-				System.err.println("Error while computing the block " + entryBlock);
-				throw new Exception("Error while computing the block " + entryBlock);
-			}
-
-			// Try to update the availability of each input of Blocks that are connected to entryBlock.
-			for(int i = 0; i < entryBlock.getOutputLength(); i++)
-			{
-				Block tmp;
-				int outputNumber = -1;
-				try
-				{
-					tmp = entryBlock.getOutput(i);
-				}
-				catch(IndexOutOfBoundsException e)
-				{
-					throw new IndexOutOfBoundsException(e.getMessage());
-				}
-
-				outputNumber = tmp.getOutputNumber(entryBlock);
-				if(outputNumber < 0)
-				{
-					System.err.println("Unable to retrieve outputNumber for block " + entryBlock);
-					throw new Exception("Unable to retrieve outputNumber for block " + entryBlock);
-				}
-
-				try
-				{
-					tmp.setInputAvailability(outputNumber, true);
-				}
-				catch(IndexOutOfBoundsException e)
-				{
-					System.err.println("Unable to set the availability for outputNumber " + outputNumber + " of the block " + tmp);
-					throw new IndexOutOfBoundsException("Unable to set the availability for outputNumber " + outputNumber + " of the block " + tmp);
-				}
-			}
-			//System.out.println("Computation of block not directly connected " + entryBlock + " went fine.\n");
-		}
 	}
 
 	/**
@@ -376,9 +336,29 @@ public class CompositeFilter implements CompositeFilterInterface
 			}
 		}
 
+		/*for(int i = 0; i < blocks.size(); i++)
+		{
+			System.out.println("\n** block n° " + i + " **");
+
+			blocks.get(i).displayAllInputs();
+
+			blocks.get(i).displayAllOutputs();
+		}*/
+		/*
+		for(int i = 0; i < blocks.size(); i++)
+		{
+			boolean[] tmp = blocks.get(i).getAllAvailabilities();
+			System.out.println("Inputs availability of block n° " + i);
+			for(int j = 0; j < tmp.length; j++)
+			{
+				System.out.println(tmp[j]);
+			}
+		}
+		*/
+
+
 		// Compute the CompositeFilter by starting at every block that are connected to the output
 		// of the CompositeFilter.
-
 		//System.out.println("Number of blocks directed connected to the output of the CompositeFilter = " + directlyConnectedToOutput.size());
 		for(int i = 0; i < directlyConnectedToOutput.size(); i++)
 		{
@@ -414,32 +394,34 @@ public class CompositeFilter implements CompositeFilterInterface
 			System.out.println(availabilitiesAdd[i]);
 		}
 		System.out.println("");*/
-
+		/*
 		if(computeOfEachBlock[0] == null)
 		{
 			System.err.println("Error for computeOfEachBlock[0]");
-		}
-		else
-		/*{
+		}*/
+		/*else
+		{
 			System.out.println("Fine for computeOfEachBlock[0]");
 		}*/
-
+		/*
 		if(computeOfEachBlock[1] == null)
 		{
 			System.err.println("Error for computeOfEachBlock[1]");
-		}
+		}*/
 		/*else
 		{
 			System.out.println("Fine for computeOfEachBlock[1]");
 		}*/
 
-
+		/*
 		if(computeOfEachBlock[indexBlockConnectToOutput] == null)
 		{
 			System.err.println("Error final step of computeOneStep");
-		}/*else{
+		}*/
+		/*else{
 			System.out.println("Seems fine");
 		}*/
+
 
 		// Restoring every input availability.
 		for(int i = 0; i < blocks.size(); i++)
@@ -459,8 +441,9 @@ public class CompositeFilter implements CompositeFilterInterface
 
 		}
 
-
 		return computeOfEachBlock[indexBlockConnectToOutput];
+
+		//return null;
 	}
 
 	/**
@@ -796,5 +779,28 @@ public class CompositeFilter implements CompositeFilterInterface
 		}
 
 		return connectionToInputOfComposite;
+	}
+
+	/**
+	 * Returns if a given Block is an input of the CompositeFilter.
+	 *
+	 * @param f The Block we want to check whether it's an input of the CompositeFilter or not.
+	 *
+	 * @return True if the Block f is an input of the CompositeFilter. Else, false.
+	*/
+	private boolean isCompositeInput(Block f)
+	{
+		boolean is = false;
+
+		for(int i = 0; i < nbInputs(); i++)
+		{
+			if(inputs[i] == f)
+			{
+				is = true;
+				return is;
+			}
+		}
+
+		return is;
 	}
 }

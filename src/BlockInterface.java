@@ -11,7 +11,7 @@ public interface BlockInterface extends Filter
 	Block getInput(int inputNumber) throws IndexOutOfBoundsException;
 
 	// Get the output outputNumber of a Block
-	Block getOutput(int outputNumber) throws IndexOutOfBoundsException;
+	Block getOutput(int outputNumber, int index) throws IndexOutOfBoundsException;
 
 	// Return a boolean mentionning if the input inputNumber is available or not.
 	boolean getInputAvailability(int inputNumber) throws IndexOutOfBoundsException;

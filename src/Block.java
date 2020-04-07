@@ -1,4 +1,5 @@
 import java.util.Vector;
+import java.util.ArrayList;
 import be.uliege.montefiore.oop.audio.*;
 
 /**
@@ -19,7 +20,8 @@ public class Block implements BlockInterface
 	Get a link to all the outputs of the current Block which are acting as inputs of
 	other Blocks.
 	*/
-	private Block[] outputs = null;
+	//private Block[] outputs = null;
+	private ArrayList<ArrayList<Block>> outputs = null;
 
 	private boolean[] inputsAvaibility;
 
@@ -38,7 +40,11 @@ public class Block implements BlockInterface
 		this.mainFilter = mainFilter;
 
 		inputs = new Block[mainFilter.nbInputs()];
-		outputs = new Block[mainFilter.nbOutputs()];
+		outputs = new ArrayList<ArrayList<Block>>(mainFilter.nbOutputs());
+		for(int i = 0; i < mainFilter.nbOutputs(); i++)
+		{
+			outputs.add(new ArrayList<Block>());
+		}
 		inputsAvaibility = new boolean[mainFilter.nbInputs()];
 	}
 
@@ -156,12 +162,14 @@ public class Block implements BlockInterface
 	 *
 	 * @return The Block linked to the output outputNumber.
 	*/
-	public Block getOutput(int outputNumber) throws IndexOutOfBoundsException
+	public Block getOutput(int outputNumber, int index) throws IndexOutOfBoundsException
 	{
-		if(outputNumber < 0 || outputNumber >= inputs.length)
+		if(outputNumber < 0 || outputNumber >= outputs.size())
 			throw new IndexOutOfBoundsException("outputNumber is out of index.");
+		if(index < 0 || index >= outputs.get(outputNumber).size())
+			throw new IndexOutOfBoundsException("index is out of bouds.");
 
-		return outputs[outputNumber];
+		return outputs.get(outputNumber).get(index);
 	}
 
 	/**
@@ -194,7 +202,12 @@ public class Block implements BlockInterface
 	*/
 	public int getOutputLength()
 	{
-		return outputs.length;
+		return mainFilter.nbOutputs();
+	}
+
+	public int getOutputLengthEmbedded(int outputNumber)
+	{
+		return outputs.get(outputNumber).size();
 	}
 
 	/**
@@ -283,10 +296,11 @@ public class Block implements BlockInterface
 		if(f == null)
 			throw new NullPointerException("Block f is null in setOutput.");
 
-		if(outputNumber < 0 || outputNumber >= inputs.length)
+		if(outputNumber < 0 || outputNumber >= outputs.size())
 			throw new IndexOutOfBoundsException("outputNumber is out of index.");
 
-		outputs[outputNumber] = f;
+		outputs.get(outputNumber).add(f);
+		//outputs[outputNumber] = f;
 
 		return;
 	}
@@ -315,15 +329,15 @@ public class Block implements BlockInterface
 	{
 		for(int i = 0; i < inputsAvaibility.length; i++)
 		{
-			/*
+
 			if(inputs[i].getMainFilter() instanceof DelayFilter)
 			{
 				inputsAvaibility[i] = true;
 			}
 			else
 				inputsAvaibility[i] = false;
-			*/
-			inputsAvaibility[i] = false;
+
+			//inputsAvaibility[i] = false;
 		}
 	}
 
@@ -332,6 +346,26 @@ public class Block implements BlockInterface
 	Others methods specific to the Block class.
 
 	-------------------------------------------- */
+
+	public void displayAllInputs()
+	{
+		for(int i = 0; i < inputs.length; i++)
+		{
+			System.out.println("block " + this + " | input n° " + i + " connected to " + inputs[i]);
+		}
+	}
+
+	public void displayAllOutputs()
+	{
+		for(int i = 0; i < outputs.size(); i++)
+		{
+			for(int j = 0; j < outputs.get(i).size(); j++)
+			{
+				System.out.println("block " + this + " | ouput n° " + i + "|" + j + " connected to " + outputs.get(i).get(j));
+			}
+		}
+
+	}
 
 	/**
 	 * Function to verify that every IO of a Block is well connected.
@@ -355,14 +389,17 @@ public class Block implements BlockInterface
 
 		}
 
-		for(int j = 0; j < outputs.length; j++)
+		for(int j = 0; j < outputs.size(); j++)
 		{
-			//System.out.println("Output n° " + j + " | value = " + outputs[j]);
-			if(outputs[j] == null)
+			for(int k = 0; k < outputs.get(j).size(); k++)
 			{
-				everythingConnected = false;
-				System.err.println("Outputs number " + j + " null.");
-				return everythingConnected;
+				//System.out.println("Output n° " + j + " | value = " + outputs[j]);
+				if(outputs.get(j).get(k) == null)
+				{
+					everythingConnected = false;
+					System.err.println("Outputs number " + j + "|"+ k + " null.");
+					return everythingConnected;
+				}
 			}
 
 		}
