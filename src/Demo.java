@@ -46,29 +46,26 @@ public class Demo
 			CompositeFilter cf = new CompositeFilter(1, 1);
 			System.out.println("New CompositeFilter instanciated.");
 
-			// Filter mult1 = new GainFilter(0.1);
-			// Filter mult2 = new GainFilter(0.1);
-			// Filter add = new AdditionFilter();
+			Filter mult = new GainFilter(0.6);
+			Filter add = new AdditionFilter();
+			Filter delay = new DelayFilter(10000);
 
-			Filter delay1 = new DelayFilter(44100 * 3);
-			Filter delay2 = new DelayFilter(44100 * 3);
-
-			Filter notInc = new DummyFilter(44100);
 
 			System.out.println("Tree basic blocks instanciated.");
 
-			cf.addBlock(delay1);
-			cf.addBlock(delay2);
-			// cf.addBlock(add);
+			cf.addBlock(delay);
+			cf.addBlock(mult);
+			cf.addBlock(add);
 			//cf.addBlock(null); //Should throw an error.
 
 			System.out.println("Tree basic blocks added to the composite filter.");
 
-			cf.connectInputToBlock(0, delay1, 0);
-            cf.connectBlockToBlock(delay1, 0, delay2, 0);
-            // cf.connectBlockToBlock(mult2, 0, add, 1);
+			cf.connectInputToBlock(0, add, 0);
+            cf.connectBlockToBlock(add, 0, delay, 0);
+			cf.connectBlockToBlock(delay, 0, mult, 0);
+			cf.connectBlockToBlock(mult, 0, add, 1);
 			//cf.connectBlockToOutput(add, 0, -1); // Should throw an error.
-            cf.connectBlockToOutput(delay2, 0, 0);
+            cf.connectBlockToOutput(add, 0, 0);
 			//cf.connectBlockToBlock(mult1, 0, notInc, 0); //Should throw an error.
 
 			cf.displayAllBlocks();
