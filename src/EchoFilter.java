@@ -1,11 +1,11 @@
 import be.uliege.montefiore.oop.audio.*;
 
 /**
- * Implementation of the Demo class.
+ * Implementation of the EchoFilter class.
  *
  * @author Maxime GOFFART (180521) and Olivier JORIS (182113).
 */
-public class Demo
+public class EchoFilter
 {
 
 	/**
