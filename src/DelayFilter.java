@@ -23,7 +23,7 @@ public class DelayFilter implements Filter
     public DelayFilter(int delayValue) throws FilterException
     {
 		if(delayValue < 0)
-			throw new FilterException("delayValue can't be smaller than 0");
+			throw new FilterException("delayValue can't be smaller than 0.");
 
         this.delayValue = delayValue;
 

@@ -51,26 +51,21 @@ public class EchoFilter
 			Filter delay = new DelayFilter(22050);
 
 
-			System.out.println("Tree basic blocks instanciated.");
+			System.out.println("Three basic blocks instanciated.");
 
 			cf.addBlock(delay);
 			cf.addBlock(mult);
 			cf.addBlock(add);
-			//cf.addBlock(null); //Should throw an error.
 
-			System.out.println("Tree basic blocks added to the composite filter.");
+			System.out.println("Three basic blocks added to the composite filter.");
 
 			cf.connectInputToBlock(0, add, 0);
             cf.connectBlockToBlock(add, 0, delay, 0);
 			cf.connectBlockToBlock(delay, 0, mult, 0);
 			cf.connectBlockToBlock(mult, 0, add, 1);
-			//cf.connectBlockToOutput(add, 0, -1); // Should throw an error.
             cf.connectBlockToOutput(add, 0, 0);
-			//cf.connectBlockToBlock(mult1, 0, notInc, 0); //Should throw an error.
 
 			cf.displayAllBlocks();
-
-			//cf.compositeIOcheck();
 
 			TestAudioFilter.applyFilter(cf, args[0], args[1]);
 

@@ -35,7 +35,8 @@ public class Block implements BlockInterface
 	public Block(Filter mainFilter) throws NullPointerException
 	{
 		if(mainFilter == null)
-			throw new NullPointerException("mainFilter pointer is equal to null in Block Constructor.");
+			throw new NullPointerException("mainFilter pointer is equal to null in Block "
+										   + "Constructor.");
 
 		this.mainFilter = mainFilter;
 
@@ -93,7 +94,8 @@ public class Block implements BlockInterface
 		}
 		catch(FilterException e)
 		{
-			throw new FilterException("Unable to compute filter " + mainFilter + "inside Block " + this);
+			throw new FilterException("Unable to compute filter " + mainFilter + "inside Block " 
+								      + this);
 		}
 
 		return out;
@@ -302,7 +304,8 @@ public class Block implements BlockInterface
 	 *
 	 * @throws IndexOutOfBoundsException inputNumber is out of bounds.
 	*/
-	public void setInputAvailability(int inputNumber, boolean status) throws IndexOutOfBoundsException
+	public void setInputAvailability(int inputNumber, boolean status) throws 
+	IndexOutOfBoundsException
 	{
 		if(inputNumber < 0 || inputNumber >= inputsAvailabilities.length)
 			throw new IndexOutOfBoundsException("inputNumber is out of bounds.");
@@ -317,15 +320,7 @@ public class Block implements BlockInterface
 	public void reinitiateInputsAvailabilities()
 	{
 		for(int i = 0; i < inputsAvailabilities.length; i++)
-		{
-
-			if(inputs[i].getMainFilter() instanceof DelayFilter)
-				inputsAvailabilities[i] = true;
-			else
-				inputsAvailabilities[i] = false;
-
 			inputsAvailabilities[i] = false;
-		}
 	}
 
 	/* --------------------------------------------
@@ -338,7 +333,8 @@ public class Block implements BlockInterface
 	{
 		for(int i = 0; i < inputs.length; i++)
 		{
-			System.out.println("block " + this + " | input n° " + i + " connected to " + inputs[i]);
+			System.out.println("block " + this + " | input n° " + i + " connected to " 
+							   + inputs[i]);
 		}
 	}
 
@@ -348,7 +344,8 @@ public class Block implements BlockInterface
 		{
 			for(int j = 0; j < outputs.get(i).size(); j++)
 			{
-				System.out.println("block " + this + " | ouput n° " + i + "|" + j + " connected to " + outputs.get(i).get(j));
+				System.out.println("block " + this + " | ouput n° " + i + "|" + j + 
+								   " connected to " + outputs.get(i).get(j));
 			}
 		}
 
