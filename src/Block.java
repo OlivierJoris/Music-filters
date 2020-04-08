@@ -324,7 +324,7 @@ public class Block implements BlockInterface
 			else
 				inputsAvailabilities[i] = false;
 
-			//inputsAvailabilities[i] = false;
+			inputsAvailabilities[i] = false;
 		}
 	}
 

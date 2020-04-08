@@ -152,6 +152,7 @@ public class CompositeFilter implements CompositeFilterInterface
 				if(!availabilities[i])
 				{
 					//System.out.println("Recursive call on " + entryBlock.getInput(i));
+					availabilities[i] = true;
 					computeRecursive(entryBlock.getInput(i), input);
 				}
 			}
