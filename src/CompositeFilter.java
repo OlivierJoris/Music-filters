@@ -20,6 +20,11 @@ public class CompositeFilter implements CompositeFilterInterface
 
 	// Saving the compute of each block
 	private double[][] computeOfEachBlock = null;
+	private boolean firstComputation = true;
+
+	/*private double firstDelayed = 0;
+	private double firstOriginal = 0;
+	private int compteur = 0;*/
 
 	/**
 	 * Constructor
@@ -134,15 +139,13 @@ public class CompositeFilter implements CompositeFilterInterface
 		// the blocks which act as inputs and that are not available.
 		if(!entryBlock.checkInputsAvailabilities())
 		{
-			//boolean[] tmp = entryBlock.getAllAvailabilities();
-			//System.out.println("Inputs availability of block " + entryBlock);
-			/*for(int j = 0; j < tmp.length; j++)
-			{
-				System.out.println(tmp[j]);
-			}*/
 
 			//System.out.println("Some inputs are not available.");
 			boolean[] availabilities = entryBlock.getAllAvailabilities();
+			/*for(int i = 0; i < availabilities.length; i++)
+			{
+				System.out.println(availabilities[i]);
+			}*/
 
 			for(int i = 0; i < availabilities.length; i++)
 			{
@@ -172,9 +175,9 @@ public class CompositeFilter implements CompositeFilterInterface
 		// We retract all the computed value of each input of the entryBlock.
 		double[] inputsValue = new double[tmpAll.length];
 
-		//boolean[] tmpAvaibility = entryBlock.getAllAvailabilities();
-		//System.out.println("tmpAvaibility :");
-		/*for(int i = 0; i < tmpAvaibility.length; i++)
+		/*boolean[] tmpAvaibility = entryBlock.getAllAvailabilities();
+		System.out.println("tmpAvaibility :");
+		for(int i = 0; i < tmpAvaibility.length; i++)
 		{
 			System.out.println(tmpAvaibility[i]);
 		}*/
@@ -204,10 +207,17 @@ public class CompositeFilter implements CompositeFilterInterface
 					System.err.println("tmpIndex < 0 for Block " + tmpAll[i] + " while processing Block " + entryBlock);
 					throw new Exception("tmpIndex < 0 for Block " + tmpAll[i] + " while processing Block " + entryBlock);
 				}
-
+				//if(i == 1 && computeOfEachBlock[tmpIndex][0] != 0.0)
+				//	System.out.println(computeOfEachBlock[tmpIndex][0]);
 				inputsValue[i] = computeOfEachBlock[tmpIndex][0];
 			}
 		}
+
+		/*if(entryBlock.getMainFilter() instanceof AdditionFilter)
+		{
+			firstOriginal = inputsValue[0];
+			firstDelayed = inputsValue[1];
+		}*/
 
 		try
 		{
@@ -254,8 +264,6 @@ public class CompositeFilter implements CompositeFilterInterface
 				}
 			}
 		}
-		//System.out.println("Computation of block not directly connected " + entryBlock + " went fine.\n");
-
 	}
 
 	/**
@@ -296,10 +304,7 @@ public class CompositeFilter implements CompositeFilterInterface
 		{
 			for(int j = 0; j < outputs[i].nbInputs(); j++)
 			{
-				/*if(outputs[i].getInput(j).getMainFilter() instanceof AdditionFilter)
-				{
-					System.out.println("AdditionFilter");
-				}*/
+
 				try
 				{
 					directlyConnectedToOutput.add(outputs[i].getInput(j));
@@ -324,37 +329,21 @@ public class CompositeFilter implements CompositeFilterInterface
 
 		//System.out.println();
 
-		computeOfEachBlock = new double[blocks.size()][];
+		if(firstComputation){
+			computeOfEachBlock = new double[blocks.size()][];
 
-		for(int i = 0; i < blocks.size(); i++)
-		{
-			// If one Block is a DelayFilter, its first ouput will be 0
-			if(blocks.get(i).getMainFilter() instanceof DelayFilter)
+			for(int i = 0; i < blocks.size(); i++)
 			{
-				computeOfEachBlock[i] = new double[1]; // A delay filter has always 1 output.
-				computeOfEachBlock[i][0] = 0;
+				// If one Block is a DelayFilter, its first ouput will be 0
+				if(blocks.get(i).getMainFilter() instanceof DelayFilter)
+				{
+					computeOfEachBlock[i] = new double[1]; // A delay filter has always 1 output.
+					computeOfEachBlock[i][0] = 0;
+				}
 			}
+
+			firstComputation = false;
 		}
-
-		/*for(int i = 0; i < blocks.size(); i++)
-		{
-			System.out.println("\n** block n° " + i + " **");
-
-			blocks.get(i).displayAllInputs();
-
-			blocks.get(i).displayAllOutputs();
-		}*/
-		/*
-		for(int i = 0; i < blocks.size(); i++)
-		{
-			boolean[] tmp = blocks.get(i).getAllAvailabilities();
-			System.out.println("Inputs availability of block n° " + i);
-			for(int j = 0; j < tmp.length; j++)
-			{
-				System.out.println(tmp[j]);
-			}
-		}
-		*/
 
 
 		// Compute the CompositeFilter by starting at every block that are connected to the output
@@ -382,54 +371,17 @@ public class CompositeFilter implements CompositeFilterInterface
 			System.err.println("Error : indexBlockConnectToOutput can NOT be < 0");
 			throw new FilterException("Error : indexBlockConnectToOutput can NOT be < 0");
 		}
-		/*else
-		{
-			System.out.println("indexBlockConnectToOutput for return " + indexBlockConnectToOutput);
-		}*/
 
-		/*System.out.println("** Availabilities of add **");
-		boolean[] availabilitiesAdd = blocks.get(2).getAllAvailabilities();
-		for(int i = 0; i < availabilitiesAdd.length; i++)
-		{
-			System.out.println(availabilitiesAdd[i]);
-		}
-		System.out.println("");*/
-		/*
-		if(computeOfEachBlock[0] == null)
-		{
-			System.err.println("Error for computeOfEachBlock[0]");
-		}*/
-		/*else
-		{
-			System.out.println("Fine for computeOfEachBlock[0]");
-		}*/
-		/*
-		if(computeOfEachBlock[1] == null)
-		{
-			System.err.println("Error for computeOfEachBlock[1]");
-		}*/
-		/*else
-		{
-			System.out.println("Fine for computeOfEachBlock[1]");
-		}*/
-
-		/*
-		if(computeOfEachBlock[indexBlockConnectToOutput] == null)
-		{
-			System.err.println("Error final step of computeOneStep");
-		}*/
-		/*else{
-			System.out.println("Seems fine");
-		}*/
+		double[] computedValue = computeOfEachBlock[indexBlockConnectToOutput];
 
 
-		// Restoring every input availability.
+		// Reset inputs availabilities & update DelayFilters
 		for(int i = 0; i < blocks.size(); i++)
 		{
 			// Reset all the inputs avaibilities for the Block i.
 			blocks.get(i).reinitiateInputsAvaibilities();
 
-			// If one block is directed connected to the input of the composite
+			// If one block is directly connected to the input of the composite
 			// filter than its input is always available.
 			for(int j = 0; j < blocks.get(i).getInputLength(); j++)
 			{
@@ -439,10 +391,45 @@ public class CompositeFilter implements CompositeFilterInterface
 				}
 			}
 
+			// Update the DelayFilter
+			if(blocks.get(i).getMainFilter() instanceof DelayFilter)
+			{
+				Block tmp;
+
+				try
+				{
+					tmp = blocks.get(i).getInput(0);
+				}
+				catch(Exception e)
+				{
+					System.err.println(e);
+					throw new FilterException("Unable to update the DelayFilter " + blocks.get(i));
+				}
+
+				if(!isCompositeInput(tmp))
+				{
+					int index = foundBlocks(tmp);
+
+					if(index < 0)
+					{
+						System.err.println("Unable to find Block");
+						throw new FilterException("Unable to find index of block " + tmp);
+					}
+
+					computeOfEachBlock[i] = computeOfEachBlock[index];
+				}
+			}
+
 		}
 
-		return computeOfEachBlock[indexBlockConnectToOutput];
+		/*if(compteur == 44100)
+		{
+			System.out.println("firstOriginal = " + firstOriginal + " | firstDelayed " + firstDelayed);
+			compteur = 0;
+		}
+		compteur++;*/
 
+		return computedValue;
 		//return null;
 	}
 

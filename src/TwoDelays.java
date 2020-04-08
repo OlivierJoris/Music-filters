@@ -53,23 +53,17 @@ public class TwoDelays
 			Filter delay1 = new DelayFilter(44100 * 3);
 			Filter delay2 = new DelayFilter(44100 * 3);
 
-			Filter notInc = new DummyFilter(44100);
-
 			System.out.println("Tree basic blocks instanciated.");
 
 			cf.addBlock(delay1);
 			cf.addBlock(delay2);
-			// cf.addBlock(add);
-			//cf.addBlock(null); //Should throw an error.
 
 			System.out.println("Tree basic blocks added to the composite filter.");
 
 			cf.connectInputToBlock(0, delay1, 0);
             cf.connectBlockToBlock(delay1, 0, delay2, 0);
-            // cf.connectBlockToBlock(mult2, 0, add, 1);
-			//cf.connectBlockToOutput(add, 0, -1); // Should throw an error.
+
             cf.connectBlockToOutput(delay2, 0, 0);
-			//cf.connectBlockToBlock(mult1, 0, notInc, 0); //Should throw an error.
 
 			cf.displayAllBlocks();
 
