@@ -48,7 +48,7 @@ public class EchoFilter
 
 			Filter mult = new GainFilter(0.6);
 			Filter add = new AdditionFilter();
-			Filter delay = new DelayFilter(10000);
+			Filter delay = new DelayFilter(22050);
 
 
 			System.out.println("Tree basic blocks instanciated.");

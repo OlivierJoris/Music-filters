@@ -20,10 +20,10 @@ public class Block implements BlockInterface
 	Get a link to all the outputs of the current Block which are acting as inputs of
 	other Blocks.
 	*/
-	//private Block[] outputs = null;
 	private ArrayList<ArrayList<Block>> outputs = null;
 
-	private boolean[] inputsAvaibility;
+	// Remembers if each input is available or not.
+	private boolean[] inputsAvailabilities;
 
 	/**
 	 * Constructor.
@@ -40,12 +40,14 @@ public class Block implements BlockInterface
 		this.mainFilter = mainFilter;
 
 		inputs = new Block[mainFilter.nbInputs()];
+
 		outputs = new ArrayList<ArrayList<Block>>(mainFilter.nbOutputs());
 		for(int i = 0; i < mainFilter.nbOutputs(); i++)
 		{
 			outputs.add(new ArrayList<Block>());
 		}
-		inputsAvaibility = new boolean[mainFilter.nbInputs()];
+
+		inputsAvailabilities = new boolean[mainFilter.nbInputs()];
 	}
 
 	/* --------------------------------------------
@@ -117,7 +119,7 @@ public class Block implements BlockInterface
 	public Filter getMainFilter(){ return mainFilter;}
 
 	/**
-	 * Returns the inputNumber-th input of the Block.
+	 * Returns the Block connected to the input inputNumber.
 	 *
 	 * @param inputNumber The index of the considered input.
 	 *
@@ -144,28 +146,19 @@ public class Block implements BlockInterface
 	}
 
 	/**
-	 * Returns the number of inputs.
-	 *
-	 * @return The number of inputs.
-	*/
-	public int getInputLength()
-	{
-		return inputs.length;
-	}
-
-	/**
 	 * Returns the outputNumber-th output of the Block.
 	 *
 	 * @param outputNumber The index of the considered output.
+	 * @param index The index inside the output outputNumber.
 	 *
-	 * @throws IndexOutOfBoundsException outputNumber is not valid.
+	 * @throws IndexOutOfBoundsException outputNumber and/or index is not valid.
 	 *
-	 * @return The Block linked to the output outputNumber.
+	 * @return The Block linked to the output outputNumber index.
 	*/
 	public Block getOutput(int outputNumber, int index) throws IndexOutOfBoundsException
 	{
 		if(outputNumber < 0 || outputNumber >= outputs.size())
-			throw new IndexOutOfBoundsException("outputNumber is out of index.");
+			throw new IndexOutOfBoundsException("outputNumber is out of bounds.");
 		if(index < 0 || index >= outputs.get(outputNumber).size())
 			throw new IndexOutOfBoundsException("index is out of bouds.");
 
@@ -173,38 +166,33 @@ public class Block implements BlockInterface
 	}
 
 	/**
-	 * Get the input number of a Block based on the Block.
+	 * Get the input number based on the block to which it is connected.
 	 *
 	 * @param f The considered Block.
 	 *
-	 * @return The input number of the Block f.
+	 * @return The input number linked to the Block f.
 	*/
-	public int getOutputNumber(Block f)
+	public int getInputNumber(Block f)
 	{
-		int outputNumber = -1;
+		int inputNumber = -1;
 
 		for(int i = 0; i < inputs.length; i++)
 		{
 			if(inputs[i] == f)
 			{
-				outputNumber = i;
-				return outputNumber;
+				inputNumber = i;
+				return inputNumber;
 			}
 		}
 
-		return outputNumber;
+		return inputNumber;
 	}
 
 	/**
-	 * Get the number of outputs.
+	 * Returns the number of times the output outputNumber is being used.
 	 *
-	 * @return The number of outputs.
+	 * @param outputNumber The index of the considered output.
 	*/
-	public int getOutputLength()
-	{
-		return mainFilter.nbOutputs();
-	}
-
 	public int getOutputLengthEmbedded(int outputNumber)
 	{
 		return outputs.get(outputNumber).size();
@@ -221,24 +209,24 @@ public class Block implements BlockInterface
 	*/
 	public boolean getInputAvailability(int inputNumber) throws IndexOutOfBoundsException
 	{
-		if(inputNumber < 0 || inputNumber >= inputsAvaibility.length)
+		if(inputNumber < 0 || inputNumber >= inputsAvailabilities.length)
 			throw new IndexOutOfBoundsException("inputNumber is out of index.");
 
-		return inputsAvaibility[inputNumber];
+		return inputsAvailabilities[inputNumber];
 	}
 
 	/**
 	 * Returns the availability status of every input.
 	 *
-	 * @return The availability status of every input as an array of boolan.
+	 * @return The availability status of every input as an array of boolean.
 	*/
 	public boolean[] getAllAvailabilities()
 	{
-		return inputsAvaibility;
+		return inputsAvailabilities;
 	}
 
 	/**
-	 * Returns true if every input is available.
+	 * Returns if every input is available.
 	 *
 	 * @return True if every input is available. Else, false.
 	*/
@@ -246,9 +234,9 @@ public class Block implements BlockInterface
 	{
 		boolean allAvailable = true;
 
-		for(int i = 0; i < inputsAvaibility.length; i++)
+		for(int i = 0; i < inputsAvailabilities.length; i++)
 		{
-			if(inputsAvaibility[i] == false)
+			if(inputsAvailabilities[i] == false)
 			{
 				allAvailable = false;
 				return allAvailable;
@@ -268,7 +256,8 @@ public class Block implements BlockInterface
 	 * @param f The Block to which we want to make a connection.
 	 * @param inputNumber The index of the considered input.
 	 *
-	 * @throws Exception f is null or inputNumber is not valid.
+	 * @throws NullPointerException f is null.
+	 * @throws IndexOutOfBoundsException  inputNumber is out of bounds.
 	*/
 	public void setInput(Block f, int inputNumber) throws Exception
 	{
@@ -276,7 +265,7 @@ public class Block implements BlockInterface
 			throw new NullPointerException("Block f is null in setInput.");
 
 		if(inputNumber < 0 || inputNumber >= inputs.length)
-			throw new IndexOutOfBoundsException("inputNumber is out of index.");
+			throw new IndexOutOfBoundsException("inputNumber is out of bounds.");
 
 		inputs[inputNumber] = f;
 
@@ -289,7 +278,8 @@ public class Block implements BlockInterface
 	 * @param f The Block to which we want to make a connection.
 	 * @param outputNumber The index of the considered output.
 	 *
-	 * @throws Exception f is null or outputNumber is not valid.
+	 * @throws NullPointerException f is null.
+	 * @throws IndexOutOfBoundsException outputNumber is out of bounds.
 	*/
 	public void setOutput(Block f, int outputNumber) throws Exception
 	{
@@ -297,10 +287,9 @@ public class Block implements BlockInterface
 			throw new NullPointerException("Block f is null in setOutput.");
 
 		if(outputNumber < 0 || outputNumber >= outputs.size())
-			throw new IndexOutOfBoundsException("outputNumber is out of index.");
+			throw new IndexOutOfBoundsException("outputNumber is out of bounds.");
 
 		outputs.get(outputNumber).add(f);
-		//outputs[outputNumber] = f;
 
 		return;
 	}
@@ -311,33 +300,31 @@ public class Block implements BlockInterface
 	 * @param inputNumber The index of the considered input.
 	 * @param status The new status.
 	 *
-	 * @throws IndexOutOfBoundsException inputNumber is not valid.
+	 * @throws IndexOutOfBoundsException inputNumber is out of bounds.
 	*/
 	public void setInputAvailability(int inputNumber, boolean status) throws IndexOutOfBoundsException
 	{
-		if(inputNumber < 0 || inputNumber >= inputsAvaibility.length)
-			throw new IndexOutOfBoundsException("inputNumber is out of index.");
+		if(inputNumber < 0 || inputNumber >= inputsAvailabilities.length)
+			throw new IndexOutOfBoundsException("inputNumber is out of bounds.");
 
-		inputsAvaibility[inputNumber] = status;
+		inputsAvailabilities[inputNumber] = status;
 		return;
 	}
 
 	/**
-	 * Function to reinitiate all the values of inputsAvaibility.
+	 * Function to reinitiate all the values of inputsAvailabilities.
 	*/
-	public void reinitiateInputsAvaibilities()
+	public void reinitiateInputsAvailabilities()
 	{
-		for(int i = 0; i < inputsAvaibility.length; i++)
+		for(int i = 0; i < inputsAvailabilities.length; i++)
 		{
 
 			if(inputs[i].getMainFilter() instanceof DelayFilter)
-			{
-				inputsAvaibility[i] = true;
-			}
+				inputsAvailabilities[i] = true;
 			else
-				inputsAvaibility[i] = false;
+				inputsAvailabilities[i] = false;
 
-			//inputsAvaibility[i] = false;
+			//inputsAvailabilities[i] = false;
 		}
 	}
 
@@ -370,13 +357,13 @@ public class Block implements BlockInterface
 	/**
 	 * Function to verify that every IO of a Block is well connected.
 	 *
-	 * @return True if every IO is well connect. Else, returns false.
+	 * @return True if every IO is well connect. Else, false.
 	*/
 	public boolean checkIOConnections()
 	{
 		boolean everythingConnected = true;
 
-		// Verifies that every i/o are connected
+		// Verifies that every input is connected
 		for(int i = 0; i < inputs.length; i++)
 		{
 			//System.err.println("Input n° " + i + " | value = " + inputs[i]);
@@ -389,6 +376,7 @@ public class Block implements BlockInterface
 
 		}
 
+		// Verifies that every output is connected.
 		for(int j = 0; j < outputs.size(); j++)
 		{
 			for(int k = 0; k < outputs.get(j).size(); k++)
@@ -397,11 +385,10 @@ public class Block implements BlockInterface
 				if(outputs.get(j).get(k) == null)
 				{
 					everythingConnected = false;
-					System.err.println("Outputs number " + j + "|"+ k + " null.");
+					System.err.println("Outputs number " + j + " | "+ k + " null.");
 					return everythingConnected;
 				}
 			}
-
 		}
 
 		return everythingConnected;

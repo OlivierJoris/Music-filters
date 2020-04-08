@@ -17,6 +17,7 @@ public class DelayFilter implements Filter
      * Constructor method
      *
      * @param delayValue The delay value of delay
+	 *
 	 * @throws FilterException delayValue can't be smaller than 0
     */
     public DelayFilter(int delayValue) throws FilterException

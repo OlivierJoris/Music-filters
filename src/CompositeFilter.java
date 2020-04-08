@@ -230,10 +230,10 @@ public class CompositeFilter implements CompositeFilterInterface
 		}
 
 		// Try to update the availability of each input of Blocks that are connected to entryBlock.
-		for(int i = 0; i < entryBlock.getOutputLength(); i++)
+		for(int i = 0; i < entryBlock.nbOutputs(); i++)
 		{
 			Block tmp;
-			int outputNumber = -1;
+			int inputNumber = -1;
 
 			for(int k = 0; k < entryBlock.getOutputLengthEmbedded(i); k++)
 			{
@@ -246,8 +246,8 @@ public class CompositeFilter implements CompositeFilterInterface
 					throw new IndexOutOfBoundsException("Unable to get the output " + i + " of the Block " + entryBlock);
 				}
 
-				outputNumber = tmp.getOutputNumber(entryBlock);
-				if(outputNumber < 0)
+				inputNumber = tmp.getInputNumber(entryBlock);
+				if(inputNumber < 0)
 				{
 					System.err.println("Unable to retrieve outputNumber for block " + entryBlock);
 					throw new Exception("Unable to retrieve outputNumber for block " + entryBlock);
@@ -255,12 +255,12 @@ public class CompositeFilter implements CompositeFilterInterface
 
 				try
 				{
-					tmp.setInputAvailability(outputNumber, true);
+					tmp.setInputAvailability(inputNumber, true);
 				}
 				catch(IndexOutOfBoundsException e)
 				{
-					System.err.println("Unable to set the availability for outputNumber " + outputNumber + " of the block " + tmp);
-					throw new IndexOutOfBoundsException("Unable to set the availability for outputNumber " + outputNumber + " of the block " + tmp);
+					System.err.println("Unable to set the availability for outputNumber " + inputNumber + " of the block " + tmp);
+					throw new IndexOutOfBoundsException("Unable to set the availability for outputNumber " + inputNumber + " of the block " + tmp);
 				}
 			}
 		}
@@ -348,7 +348,7 @@ public class CompositeFilter implements CompositeFilterInterface
 
 		// Compute the CompositeFilter by starting at every block that are connected to the output
 		// of the CompositeFilter.
-		//System.out.println("Number of blocks directed connected to the output of the CompositeFilter = " + directlyConnectedToOutput.size());
+		//System.out.println("Number of blocks directly connected to the output of the CompositeFilter = " + directlyConnectedToOutput.size());
 		for(int i = 0; i < directlyConnectedToOutput.size(); i++)
 		{
 			try
@@ -379,11 +379,11 @@ public class CompositeFilter implements CompositeFilterInterface
 		for(int i = 0; i < blocks.size(); i++)
 		{
 			// Reset all the inputs avaibilities for the Block i.
-			blocks.get(i).reinitiateInputsAvaibilities();
+			blocks.get(i).reinitiateInputsAvailabilities();
 
 			// If one block is directly connected to the input of the composite
 			// filter than its input is always available.
-			for(int j = 0; j < blocks.get(i).getInputLength(); j++)
+			for(int j = 0; j < blocks.get(i).nbInputs(); j++)
 			{
 				if(connectedToInputOfComposite(blocks.get(i), j))
 				{
@@ -456,7 +456,7 @@ public class CompositeFilter implements CompositeFilterInterface
 	/**
 	 * Add a Filter to the CompositeFilter.
 	 *
-	 * @param f The filter we wished to add.
+	 * @param f The filter we want to add.
 	 *
 	 * @throws NullPointerException Filter f is null.
 	*/
@@ -487,10 +487,10 @@ public class CompositeFilter implements CompositeFilterInterface
 			throw new NullPointerException("Filter f1 is null in connectBlockToBlock.");
 		if(f2 == null)
 			throw new NullPointerException("Filter f2 is null in connectBlockToOutput.");
-		if(o1 < 0)
-			throw new BlockException("o1 (output number) in connectBlockToBlock can't be < 0.");
-		if(i2 < 0)
-			throw new BlockException("i2 (input number) in connectBlockToBlock can't be < 0.");
+		if(o1 < 0  || o1 >= f1.nbOutputs())
+			throw new BlockException("o1 (output number) in connectBlockToBlock can't be < 0 nor >= to the number of outputs.");
+		if(i2 < 0 || i2 >= f2.nbInputs())
+			throw new BlockException("i2 (input number) in connectBlockToBlock can't be < 0 not >= to the number of inputs.");
 
 		int indexF1 = -1;
 		int indexF2 = -1;
@@ -572,10 +572,10 @@ public class CompositeFilter implements CompositeFilterInterface
 	{
 		if(f1 == null)
 			throw new NullPointerException("Filter f1 is null in connectBlockToOutput.");
-		if(o1 < 0)
-			throw new BlockException("o1 (output number) in connectBlockToOutput can't be < 0.");
-		if(o2 < 0)
-			throw new BlockException("o2 (output number) in connectBlockToOutput can't be < 0.");
+		if(o1 < 0 || o1 >= f1.nbOutputs())
+			throw new BlockException("o1 (output number) in connectBlockToOutput can't be < 0 nor >= to the number of outputs.");
+		if(o2 < 0 || o2 >= numberOutputs)
+			throw new BlockException("o2 (output number) in connectBlockToOutput can't be < 0 nor >= to the number of outputs of the CompositeFilter.");
 
 		int indexF1 = -1;
 
@@ -630,10 +630,10 @@ public class CompositeFilter implements CompositeFilterInterface
 	{
 		if(f2 == null)
 			throw new NullPointerException("Filter f2 is null in connectInputToBlock.");
-		if(i1 < 0)
-			throw new BlockException("i1 (input number) in connectInputToBlock can't be < 0.");
-		if(i2 < 0)
-			throw new BlockException("i2 (input number) in connectInputToBlock can't be < 0.");
+		if(i1 < 0 || i1 >= numberInputs)
+			throw new BlockException("i1 (input number) in connectInputToBlock can't be < 0 nor >= to the number of inputs of the CompositeFilter.");
+		if(i2 < 0 || i2 >= f2.nbInputs())
+			throw new BlockException("i2 (input number) in connectInputToBlock can't be < 0 nor >= to the number of inputs.");
 
 		int indexF2 = -1;
 
@@ -708,7 +708,7 @@ public class CompositeFilter implements CompositeFilterInterface
 			if(f == blocks.get(i))
 			{
 				index = i;
-				return i;
+				return index;
 			}
 		}
 
@@ -737,7 +737,7 @@ public class CompositeFilter implements CompositeFilterInterface
 			if(blocks.get(i).getMainFilter() == f)
 			{
 				included = i;
-				break;
+				return included;
 			}
 		}
 
@@ -756,6 +756,7 @@ public class CompositeFilter implements CompositeFilterInterface
 	private boolean connectedToInputOfComposite(Block f, int inputNumber)
 	{
 		boolean connectionToInputOfComposite = false;
+
 		for(int i = 0; i < nbInputs(); i++)
 		{
 			if(f.getInput(inputNumber) == inputs[i])
