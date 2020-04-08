@@ -94,7 +94,7 @@ public class Block implements BlockInterface
 		}
 		catch(FilterException e)
 		{
-			throw new FilterException("Unable to compute filter " + mainFilter + "inside Block " 
+			throw new FilterException("Unable to compute filter " + mainFilter + "inside Block "
 								      + this);
 		}
 
@@ -194,6 +194,8 @@ public class Block implements BlockInterface
 	 * Returns the number of times the output outputNumber is being used.
 	 *
 	 * @param outputNumber The index of the considered output.
+	 *
+	 * @return Number of times the output outputNumber is being used.
 	*/
 	public int getOutputLengthEmbedded(int outputNumber)
 	{
@@ -304,7 +306,7 @@ public class Block implements BlockInterface
 	 *
 	 * @throws IndexOutOfBoundsException inputNumber is out of bounds.
 	*/
-	public void setInputAvailability(int inputNumber, boolean status) throws 
+	public void setInputAvailability(int inputNumber, boolean status) throws
 	IndexOutOfBoundsException
 	{
 		if(inputNumber < 0 || inputNumber >= inputsAvailabilities.length)
@@ -333,7 +335,7 @@ public class Block implements BlockInterface
 	{
 		for(int i = 0; i < inputs.length; i++)
 		{
-			System.out.println("block " + this + " | input n° " + i + " connected to " 
+			System.out.println("block " + this + " | input n° " + i + " connected to "
 							   + inputs[i]);
 		}
 	}
@@ -344,7 +346,7 @@ public class Block implements BlockInterface
 		{
 			for(int j = 0; j < outputs.get(i).size(); j++)
 			{
-				System.out.println("block " + this + " | ouput n° " + i + "|" + j + 
+				System.out.println("block " + this + " | ouput n° " + i + "|" + j +
 								   " connected to " + outputs.get(i).get(j));
 			}
 		}
