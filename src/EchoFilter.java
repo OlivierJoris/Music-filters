@@ -50,7 +50,6 @@ public class EchoFilter
 			Filter add = new AdditionFilter();
 			Filter delay = new DelayFilter(22050);
 
-
 			System.out.println("Three basic blocks instanciated.");
 
 			cf.addBlock(delay);
@@ -68,17 +67,11 @@ public class EchoFilter
 			cf.displayAllBlocks();
 
 			TestAudioFilter.applyFilter(cf, args[0], args[1]);
-
 		}
 		catch(Exception e)
 		{
 			System.err.println(e);
 			System.exit(-1);
 		}
-
-
-
-
-
 	}
 }

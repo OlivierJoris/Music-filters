@@ -282,12 +282,13 @@ public class CompositeFilter implements CompositeFilterInterface
 			}
 		}
 
-		if(firstComputation){
+		if(firstComputation)
+		{
 			computeOfEachBlock = new double[blocks.size()][];
 
 			for(int i = 0; i < blocks.size(); i++)
 			{
-				// If one Block is a DelayFilter, its first output will be 0.
+				//If one Block is a DelayFilter, its first output will be 0.
 				if(blocks.get(i).getMainFilter() instanceof DelayFilter)
 				{
 					computeOfEachBlock[i] = new double[1]; // A delay filter has always 1 output.
@@ -323,8 +324,6 @@ public class CompositeFilter implements CompositeFilterInterface
 			System.err.println("Error : indexBlockConnectToOutput can NOT be < 0");
 			throw new FilterException("Error : indexBlockConnectToOutput can NOT be < 0");
 		}
-
-		double[] computedValue = computeOfEachBlock[indexBlockConnectToOutput];
 
 		// Reset inputs availabilities & update DelayFilters
 		for(int i = 0; i < blocks.size(); i++)
@@ -370,8 +369,9 @@ public class CompositeFilter implements CompositeFilterInterface
 					computeOfEachBlock[i] = computeOfEachBlock[index];
 				}
 			}
-
 		}
+
+		double[] computedValue = computeOfEachBlock[indexBlockConnectToOutput];
 
 		return computedValue;
 	}
@@ -656,7 +656,6 @@ public class CompositeFilter implements CompositeFilterInterface
 	 *
 	 * @return True if f is included in the composite filter. Else, false.
 	*/
-
 	private int foundFilter(Filter f) throws NullPointerException
 	{
 		if(f == null)
