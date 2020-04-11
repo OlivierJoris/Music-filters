@@ -240,8 +240,6 @@ public class CompositeFilter implements CompositeFilterInterface
     */
 	public double[] computeOneStep(double[] input) throws FilterException
 	{
-		//System.out.println("\n** computation process **");
-
 		if(input == null)
 			throw new FilterException("Null input in computeOneStep().");
 
@@ -325,6 +323,8 @@ public class CompositeFilter implements CompositeFilterInterface
 			throw new FilterException("Error : indexBlockConnectToOutput can NOT be < 0");
 		}
 
+		double[] computedValue = computeOfEachBlock[indexBlockConnectToOutput];
+
 		// Reset inputs availabilities & update DelayFilters
 		for(int i = 0; i < blocks.size(); i++)
 		{
@@ -370,8 +370,6 @@ public class CompositeFilter implements CompositeFilterInterface
 				}
 			}
 		}
-
-		double[] computedValue = computeOfEachBlock[indexBlockConnectToOutput];
 
 		return computedValue;
 	}

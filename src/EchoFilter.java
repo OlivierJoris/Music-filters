@@ -46,7 +46,7 @@ public class EchoFilter
 			CompositeFilter cf = new CompositeFilter(1, 1);
 			System.out.println("New CompositeFilter instanciated.");
 
-			Filter mult = new GainFilter(0.6);
+			Filter mult = new GainFilter(0.4);
 			Filter add = new AdditionFilter();
 			Filter delay = new DelayFilter(22050);
 
