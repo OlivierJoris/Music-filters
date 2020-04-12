@@ -2,7 +2,7 @@ import be.uliege.montefiore.oop.audio.Filter;
 import be.uliege.montefiore.oop.audio.FilterException;
 
 /**
- * Implementation of the GainFilter class
+ * Implementation of the GainFilter class.
  *
  * @author Maxime GOFFART (180521) and Olivier JORIS (182113)
 */
@@ -11,10 +11,10 @@ public class GainFilter implements Filter
     private double gainValue; // The gain value of the GainFilter.
 
     /**
-     * Constructor method
+     * Constructor method.
      *
-     * @param gainValue The gain value of the GainFilter
-	 * @throws FilterException The gainValue can't be smaller than 0
+     * @param gainValue The gain value of the GainFilter.
+	 * @throws FilterException The gainValue can't be smaller than 0.
     */
     public GainFilter(double gainValue) throws FilterException
     {
@@ -25,23 +25,27 @@ public class GainFilter implements Filter
     }
 
 	/**
-     * Returns the number of inputs
-    */
+	 * Returns the number of inputs.
+	 *
+	 * @return The number of inputs.
+	*/
    	public int nbInputs()
    	{
     	return 1;
    	}
 
 	/**
-     * Returns the number of outputs
-    */
+	 * Returns the number of outputs.
+	 *
+	 * @return The number of outputs.
+	*/
    	public int nbOutputs()
    	{
     	return 1;
    	}
 
     /**
-     * Perfoms one step of computation of the Gainfilter.
+     * Performs one step of computation of the Gainfilter.
      *
      * @param input An array containing n_I samples (one for each input).
      *
@@ -62,7 +66,7 @@ public class GainFilter implements Filter
     }
 
 	/**
-     * Reset the DelayFilter
+     * Resets the GainFilter
     */
     public void reset()
     {

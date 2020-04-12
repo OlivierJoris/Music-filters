@@ -13,12 +13,12 @@ public class Block implements BlockInterface
 	// The filter of a block.
 	private Filter mainFilter;
 
-	// Get a link to all the filters that are an input of the current Block.
+	// Gets a link to all the filters that are an input of the current Block.
 	private Block[] inputs = null;
 
 	/*
-	Get a link to all the outputs of the current Block which are acting as inputs of
-	other Blocks.
+	 Gets a link to all the outputs of the current Block which are acting as inputs of
+	 other Blocks.
 	*/
 	private ArrayList<ArrayList<Block>> outputs = null;
 
@@ -57,16 +57,20 @@ public class Block implements BlockInterface
 
 	/**
 	 * Returns the number of inputs.
+	 *
+	 * @return The number of inputs.
 	*/
 	public int nbInputs(){ return mainFilter.nbInputs();}
 
 	/**
 	 * Returns the number of outputs.
+	 *
+	 * @return The number of outputs.
 	*/
 	public int nbOutputs(){ return mainFilter.nbOutputs();}
 
 	/**
-     * Perfoms one step of computation of the Block.
+     * Performs one step of computation of the Block.
      *
      * @param input An array containing n_I samples (one for each input).
      *
@@ -78,13 +82,13 @@ public class Block implements BlockInterface
 	{
 
 		if(input == null)
-			throw new FilterException("Null input in computeOneStep().");
+			throw new FilterException("Null input in computeOneStep of Block.");
 
 		if(!checkIOConnections())
-			throw new FilterException("Some IO of the filter are NOT connected.");
+			throw new FilterException("Some IO of the filter are NOT connected in Block.");
 
 		if(input.length != mainFilter.nbInputs())
-			throw new FilterException("Inavlid number of inputs.");
+			throw new FilterException("Inavlid number of inputs in computeOneStep of Block.");
 
 		double[] out = null;
 
@@ -102,7 +106,7 @@ public class Block implements BlockInterface
 	}
 
 	/**
-     * Reset the Block.
+     * Resets the Block.
     */
 	public void reset()
 	{
@@ -132,7 +136,7 @@ public class Block implements BlockInterface
 	public Block getInput(int inputNumber) throws IndexOutOfBoundsException
 	{
 		if(inputNumber < 0 || inputNumber >= inputs.length)
-			throw new IndexOutOfBoundsException("inputNumber is out of index.");
+			throw new IndexOutOfBoundsException("inputNumber in getInput of Block is out of bounds.");
 
 		return inputs[inputNumber];
 	}
@@ -160,22 +164,27 @@ public class Block implements BlockInterface
 	public Block getOutput(int outputNumber, int index) throws IndexOutOfBoundsException
 	{
 		if(outputNumber < 0 || outputNumber >= outputs.size())
-			throw new IndexOutOfBoundsException("outputNumber is out of bounds.");
+			throw new IndexOutOfBoundsException("outputNumber in getOutput of Block is out of bounds.");
 		if(index < 0 || index >= outputs.get(outputNumber).size())
-			throw new IndexOutOfBoundsException("index is out of bouds.");
+			throw new IndexOutOfBoundsException("index in getOutput of Block is out of bouds.");
 
 		return outputs.get(outputNumber).get(index);
 	}
 
 	/**
-	 * Get the input number based on the block to which it is connected.
+	 * Gets the input number based on the block to which it is connected.
 	 *
 	 * @param f The considered Block.
 	 *
+	 * @throws NullPointerException The given Block is null.
+	 *
 	 * @return The input number linked to the Block f.
 	*/
-	public int getInputNumber(Block f)
+	public int getInputNumber(Block f) throws NullPointerException
 	{
+		if(f == null)
+			throw new NullPointerException("The given Block f is null in getInputNumber of Block.");
+
 		int inputNumber = -1;
 
 		for(int i = 0; i < inputs.length; i++)
@@ -194,27 +203,31 @@ public class Block implements BlockInterface
 	 * Returns the number of times the output outputNumber is being used.
 	 *
 	 * @param outputNumber The index of the considered output.
+	 * @throws IndexOutOfBoundsException outputNumber is out of bounds.
 	 *
 	 * @return Number of times the output outputNumber is being used.
 	*/
-	public int getOutputLengthEmbedded(int outputNumber)
+	public int getOutputLengthEmbedded(int outputNumber) throws IndexOutOfBoundsException
 	{
+		if(outputNumber < 0 || outputNumber >= outputs.size())
+			throw new IndexOutOfBoundsException("outputNumber in getOutputLengthEmbedded is out of bounds");
+
 		return outputs.get(outputNumber).size();
 	}
 
 	/**
-	 * Get the availability status of the input inputNumber.
+	 * Gets the availability status of the input inputNumber.
 	 *
 	 * @param inputNumber The index of the considered input.
 	 *
-	 * @throws IndexOutOfBoundsException inputNumber is not valid.
+	 * @throws IndexOutOfBoundsException inputNumber is out of bounds.
 	 *
 	 * @return True if the input inputNumber is available. Else, false.
 	*/
 	public boolean getInputAvailability(int inputNumber) throws IndexOutOfBoundsException
 	{
 		if(inputNumber < 0 || inputNumber >= inputsAvailabilities.length)
-			throw new IndexOutOfBoundsException("inputNumber is out of index.");
+			throw new IndexOutOfBoundsException("inputNumber in getInputAvailability is out of bounds.");
 
 		return inputsAvailabilities[inputNumber];
 	}
@@ -255,7 +268,7 @@ public class Block implements BlockInterface
 	-------------------------------------------- */
 
 	/**
-	 * Set the input inputNumber as f.
+	 * Sets the input inputNumber as f.
 	 *
 	 * @param f The Block to which we want to make a connection.
 	 * @param inputNumber The index of the considered input.
@@ -269,7 +282,7 @@ public class Block implements BlockInterface
 			throw new NullPointerException("Block f is null in setInput.");
 
 		if(inputNumber < 0 || inputNumber >= inputs.length)
-			throw new IndexOutOfBoundsException("inputNumber is out of bounds.");
+			throw new IndexOutOfBoundsException("inputNumber in setInput is out of bounds.");
 
 		inputs[inputNumber] = f;
 
@@ -277,7 +290,7 @@ public class Block implements BlockInterface
 	}
 
 	/**
-	 * Set the output outputNumber as f.
+	 * Sets the output outputNumber as f.
 	 *
 	 * @param f The Block to which we want to make a connection.
 	 * @param outputNumber The index of the considered output.
@@ -291,7 +304,7 @@ public class Block implements BlockInterface
 			throw new NullPointerException("Block f is null in setOutput.");
 
 		if(outputNumber < 0 || outputNumber >= outputs.size())
-			throw new IndexOutOfBoundsException("outputNumber is out of bounds.");
+			throw new IndexOutOfBoundsException("outputNumber in setOutput is out of bounds.");
 
 		outputs.get(outputNumber).add(f);
 
@@ -299,7 +312,7 @@ public class Block implements BlockInterface
 	}
 
 	/**
-	 * Set the input inputNumber availability status as status.
+	 * Sets the input inputNumber availability status as status.
 	 *
 	 * @param inputNumber The index of the considered input.
 	 * @param status The new status.
@@ -307,10 +320,10 @@ public class Block implements BlockInterface
 	 * @throws IndexOutOfBoundsException inputNumber is out of bounds.
 	*/
 	public void setInputAvailability(int inputNumber, boolean status) throws
-	IndexOutOfBoundsException
+		IndexOutOfBoundsException
 	{
 		if(inputNumber < 0 || inputNumber >= inputsAvailabilities.length)
-			throw new IndexOutOfBoundsException("inputNumber is out of bounds.");
+			throw new IndexOutOfBoundsException("inputNumber int setInputAvailability is out of bounds.");
 
 		inputsAvailabilities[inputNumber] = status;
 		return;
@@ -331,6 +344,7 @@ public class Block implements BlockInterface
 
 	-------------------------------------------- */
 
+	/* -- NEED TO BE REMOVE BEOFRE SUBMISSION -- */
 	public void displayAllInputs()
 	{
 		for(int i = 0; i < inputs.length; i++)
@@ -340,6 +354,7 @@ public class Block implements BlockInterface
 		}
 	}
 
+	/* -- NEED TO BE REMOVE BEOFRE SUBMISSION -- */
 	public void displayAllOutputs()
 	{
 		for(int i = 0; i < outputs.size(); i++)
@@ -356,7 +371,7 @@ public class Block implements BlockInterface
 	/**
 	 * Function to verify that every IO of a Block is well connected.
 	 *
-	 * @return True if every IO is well connect. Else, false.
+	 * @return True if every IO is well connected. Else, false.
 	*/
 	public boolean checkIOConnections()
 	{
@@ -375,7 +390,7 @@ public class Block implements BlockInterface
 
 		}
 
-		// Verifies that every output is connected.
+		// Verifies that every output is connected
 		for(int j = 0; j < outputs.size(); j++)
 		{
 			for(int k = 0; k < outputs.get(j).size(); k++)

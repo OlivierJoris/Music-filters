@@ -39,16 +39,11 @@ public class TwoDelays
 		System.out.println("Detected output file : " + args[1]);
 		System.out.println();
 
-		// Create the CompositeFilter & creates the basic block
-
+		// Creates the CompositeFilter & creates the basic block
 		try
 		{
 			CompositeFilter cf = new CompositeFilter(1, 1);
 			System.out.println("New CompositeFilter instanciated.");
-
-			// Filter mult1 = new GainFilter(0.1);
-			// Filter mult2 = new GainFilter(0.1);
-			// Filter add = new AdditionFilter();
 
 			Filter delay1 = new DelayFilter(44100 * 3);
 			Filter delay2 = new DelayFilter(44100 * 3);
@@ -66,8 +61,6 @@ public class TwoDelays
             cf.connectBlockToOutput(delay2, 0, 0);
 
 			cf.displayAllBlocks();
-
-			//cf.compositeIOcheck();
 
 			TestAudioFilter.applyFilter(cf, args[0], args[1]);
 

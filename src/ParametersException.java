@@ -6,7 +6,15 @@
 */
 class ParametersException extends Exception{
 
+	/**
+	 * Constructor without paramaters.
+	*/
 	public ParametersException() { super();}
 
+	/**
+	 * Constructor with a parameter.
+	 *
+	 * @param errorMessage An error message.
+	*/
 	public ParametersException(String errorMessage) { super(errorMessage);}
 }

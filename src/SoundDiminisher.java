@@ -39,8 +39,7 @@ public class SoundDiminisher
 		System.out.println("Detected output file : " + args[1]);
 		System.out.println();
 
-		// Create the CompositeFilter & creates the basic block
-
+		// Creates the CompositeFilter & creates the basic block
 		try
 		{
 			CompositeFilter cf = new CompositeFilter(1, 1);
@@ -68,8 +67,6 @@ public class SoundDiminisher
 
 			cf.displayAllBlocks();
 
-			//cf.compositeIOcheck();
-
 			TestAudioFilter.applyFilter(cf, args[0], args[1]);
 
 		}
@@ -78,10 +75,5 @@ public class SoundDiminisher
 			System.err.println(e);
 			System.exit(-1);
 		}
-
-
-
-
-
 	}
 }

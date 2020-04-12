@@ -39,8 +39,7 @@ public class EchoFilter
 		System.out.println("Detected output file : " + args[1]);
 		System.out.println();
 
-		// Create the CompositeFilter & creates the basic block
-
+		// Creates the CompositeFilter & creates the basic block
 		try
 		{
 			CompositeFilter cf = new CompositeFilter(1, 1);

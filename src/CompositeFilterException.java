@@ -6,7 +6,15 @@
 */
 class CompositeFilterException extends Exception{
 
+	/**
+	 * Constructor without paramaters.
+	*/
 	public CompositeFilterException(){ super();}
 
+	/**
+	 * Constructor with a parameter.
+	 *
+	 * @param errorMessage An error message.
+	*/
 	public CompositeFilterException(String errorMessage){ super(errorMessage);}
 }

@@ -1,7 +1,7 @@
 import be.uliege.montefiore.oop.audio.*;
 
 /**
- * Implementation of the CompositeOut class which represents an output of an
+ * Implementation of the CompositeOut class which represents an output of a
  * CompositeFilter.
  *
  * @author Maxime GOFFART (180521) and Olivier JORIS (182113).
@@ -14,17 +14,21 @@ public class CompositeOut implements Filter
 	public CompositeOut(){ return;}
 
 	/**
-	 * Returns the number of inputs
+	 * Returns the number of inputs.
+	 *
+	 * @return The number of inputs.
 	*/
 	public int nbInputs(){ return 1;}
 
-	/*
-	 * Returns the number of outputs
+	/**
+	 * Returns the number of outputs.
+	 *
+	 * @return The number of outputs.
 	*/
 	public int nbOutputs(){ return 1;}
 
 	/**
-     * Perfoms one step of computation of the CompositeIn.
+     * Performs one step of computation of the CompositeOut.
      *
      * @param input An array containing n_I samples (one for each input).
      *
@@ -38,7 +42,7 @@ public class CompositeOut implements Filter
 	}
 
 	/**
-     * Reset the CompositeIn
+     * Resets the CompositeOut
     */
 	public void reset(){ return;}
 

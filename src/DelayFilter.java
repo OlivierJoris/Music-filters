@@ -2,7 +2,7 @@ import be.uliege.montefiore.oop.audio.Filter;
 import be.uliege.montefiore.oop.audio.FilterException;
 
 /**
- * Implementation of the DelayFilter class
+ * Implementation of the DelayFilter class.
  *
  * @author Maxime GOFFART (180521) and Olivier JORIS (182113)
 */
@@ -14,11 +14,11 @@ public class DelayFilter implements Filter
                                         delayed samples */
 
     /**
-     * Constructor method
+     * Constructor method.
      *
-     * @param delayValue The delay value of delay
+     * @param delayValue The delay value of delay.
 	 *
-	 * @throws FilterException delayValue can't be smaller than 0
+	 * @throws FilterException delayValue can't be smaller than 0.
     */
     public DelayFilter(int delayValue) throws FilterException
     {
@@ -30,6 +30,7 @@ public class DelayFilter implements Filter
         count = 0;
 
         delayedSamples = new double[delayValue];
+
         // We fill the array with zeros in order to delay the samples.
         for(int i = 0; i < delayedSamples.length; ++i)
             delayedSamples[i] = 0.0;
@@ -37,23 +38,27 @@ public class DelayFilter implements Filter
     }
 
 	/**
-     * Returns the number of inputs
-    */
+	 * Returns the number of inputs.
+	 *
+	 * @return The number of inputs.
+	*/
    	public int nbInputs()
    	{
     	return 1;
 	}
 
 	/**
-     * Returns the number of outputs
-    */
+	 * Returns the number of outputs.
+	 *
+	 * @return The number of outputs.
+	*/
 	public int nbOutputs()
 	{
     	return 1;
 	}
 
     /**
-     * Perfoms one step of computation of the DelayFilter.
+     * Performs one step of computation of the DelayFilter.
      *
      * @param input An array containing n_I samples (one for each input).
      *
@@ -80,7 +85,7 @@ public class DelayFilter implements Filter
     }
 
     /**
-     * Reset the DelayFilter
+     * Resets the DelayFilter.
     */
 	public void reset()
     {

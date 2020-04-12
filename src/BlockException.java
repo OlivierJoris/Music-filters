@@ -5,7 +5,15 @@
 */
 class BlockException extends Exception{
 
+	/**
+	 * Constructor without parameters.
+	*/
 	public BlockException(){ super();}
 
+	/**
+	 * Constructor with a parameter.
+	 *
+	 * @param errorMessage An error message.
+	*/
 	public BlockException(String errorMessage){ super(errorMessage);}
 }
