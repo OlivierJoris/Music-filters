@@ -7,21 +7,77 @@ import be.uliege.montefiore.oop.audio.Filter;
 */
 public interface BlockInterface extends Filter
 {
-	// Get the input inputNumber of a Block
+
+	/**
+	 * Returns the main filter of the Block.
+	 *
+	 * @return The main filter of the Block.
+	*/
+	public Filter getMainFilter();
+
+	/**
+	 * Returns the Block connected to the input inputNumber.
+	 *
+	 * @param inputNumber The index of the considered input.
+	 *
+	 * @throws IndexOutOfBoundsException inputNumber is not valid.
+	 *
+	 * @return The Block linked to the input inputNumber.
+	*/
 	Block getInput(int inputNumber) throws IndexOutOfBoundsException;
 
-	// Get the output outputNumber of a Block
+	/**
+	 * Returns the outputNumber-th output of the Block.
+	 *
+	 * @param outputNumber The index of the considered output.
+	 * @param index The index inside the output outputNumber.
+	 *
+	 * @throws IndexOutOfBoundsException outputNumber and/or index is not valid.
+	 *
+	 * @return The Block linked to the output outputNumber index.
+	*/
 	Block getOutput(int outputNumber, int index) throws IndexOutOfBoundsException;
 
-	// Return a boolean mentionning if the input inputNumber is available or not.
+	/**
+	 * Gets the availability status of the input inputNumber.
+	 *
+	 * @param inputNumber The index of the considered input.
+	 *
+	 * @throws IndexOutOfBoundsException inputNumber is out of bounds.
+	 *
+	 * @return True if the input inputNumber is available. Else, false.
+	*/
 	boolean getInputAvailability(int inputNumber) throws IndexOutOfBoundsException;
 
-	// Allows to add an input to a Block ie connecting the input of a block to another one.
+	/**
+	 * Sets the input inputNumber as f.
+	 *
+	 * @param f The Block to which we want to make a connection.
+	 * @param inputNumber The index of the considered input.
+	 *
+	 * @throws NullPointerException f is null.
+	 * @throws IndexOutOfBoundsException  inputNumber is out of bounds.
+	*/
 	void setInput(Block f, int inputNumber) throws Exception;
 
-	// Allows to add an output to a Block ie connecting the block to the input of another one.
+	/**
+	 * Sets the output outputNumber as f.
+	 *
+	 * @param f The Block to which we want to make a connection.
+	 * @param outputNumber The index of the considered output.
+	 *
+	 * @throws NullPointerException f is null.
+	 * @throws IndexOutOfBoundsException outputNumber is out of bounds.
+	*/
 	void setOutput(Block f, int outputNumber) throws Exception;
 
-	// Modifying the availability status of the input inputNumber.
+	/**
+	 * Sets the input inputNumber availability status as status.
+	 *
+	 * @param inputNumber The index of the considered input.
+	 * @param status The new status.
+	 *
+	 * @throws IndexOutOfBoundsException inputNumber is out of bounds.
+	*/
 	void setInputAvailability(int inputNumber, boolean status) throws IndexOutOfBoundsException;
 }
