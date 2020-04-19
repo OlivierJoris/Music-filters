@@ -285,7 +285,7 @@ public class CompositeFilter implements CompositeFilterInterface
 
 		// Getting all the blocks that are directly connected to the output of the CompositeFilter
 		Vector<Block> directlyConnectedToOutput = new Vector<Block>();
-
+		Block tmpDirectlyConnected = null;
 		for(int i = 0; i < numberOutputs; i++)
 		{
 			for(int j = 0; j < outputs[i].nbInputs(); j++)
@@ -293,7 +293,11 @@ public class CompositeFilter implements CompositeFilterInterface
 
 				try
 				{
-					directlyConnectedToOutput.add(outputs[i].getInput(j));
+					tmpDirectlyConnected = outputs[i].getInput(j);
+					if(!(directlyConnectedToOutput.contains(tmpDirectlyConnected)))
+					{
+						directlyConnectedToOutput.add(tmpDirectlyConnected);
+					}
 				}
 				catch(Exception e)
 				{
@@ -346,17 +350,32 @@ public class CompositeFilter implements CompositeFilterInterface
 
 		}
 
-		// TO DO : To restrictive - if a composite as more than one output
-		// -- need to be modified.
-		int indexBlockConnectToOutput = foundBlocks(directlyConnectedToOutput.get(0));
+		/*
+		 Retracts computed value of each Block that are directly connected to the outputs
+		 of the CompositeFilter.
+		*/
+		double[] computedValue = new double[directlyConnectedToOutput.size()];
+		int indexBlockConnectedToOutput = -1;
 
-		if(indexBlockConnectToOutput < 0)
+		for(int i = 0; i < directlyConnectedToOutput.size(); i++)
 		{
-			System.err.println("Error : indexBlockConnectToOutput can NOT be < 0");
-			throw new FilterException("Error : indexBlockConnectToOutput can NOT be < 0");
-		}
+			try
+			{
+				indexBlockConnectedToOutput = foundBlocks(directlyConnectedToOutput.get(i));
+			}
+			catch(NullPointerException e)
+			{
+				throw new FilterException(e.getMessage());
+			}
 
-		double[] computedValue = computeOfEachBlock[indexBlockConnectToOutput];
+			if(indexBlockConnectedToOutput < 0)
+			{
+				System.err.println("Error : indexBlockConnectToOutput can NOT be < 0");
+				throw new FilterException("Error : indexBlockConnectToOutput can NOT be < 0");
+			}
+
+			computedValue[i] = computeOfEachBlock[indexBlockConnectedToOutput][0];
+		}
 
 		boolean tmpTestConnection = false;
 
