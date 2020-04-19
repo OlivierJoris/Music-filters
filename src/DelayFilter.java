@@ -2,7 +2,7 @@ import be.uliege.montefiore.oop.audio.Filter;
 import be.uliege.montefiore.oop.audio.FilterException;
 
 /**
- * Implementation of the DelayFilter class.
+ * Implementation of the delay filter.
  *
  * @author Maxime GOFFART (180521) and Olivier JORIS (182113)
 */
@@ -90,6 +90,7 @@ public class DelayFilter implements Filter
 	public void reset()
     {
         count = 0;
+		
         // We reset the delayedSamples array.
         for(int i = 0; i < delayedSamples.length; ++i)
             delayedSamples[i] = 0.0;

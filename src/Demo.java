@@ -7,24 +7,24 @@ import be.uliege.montefiore.oop.audio.*;
 */
 public class Demo
 {
-
 	/**
-	 * Method to check the number of arguments given to the program.
+	 * Method to check the number of parameters given to the program.
 	 *
-	 * @param numberParamateres The number of parameters.
+	 * @param numberParameteres The number of parameters.
 	 *
-	 * @throws ParametersException The number of arguments doesn't match what was expected.
+	 * @throws ParametersException The number of parameters doesn't match what was expected.
 	*/
-	static void checkParamters(int numberParamateres) throws ParametersException
+	static void checkParamters(int numberParameteres) throws ParametersException
 	{
-		if(numberParamateres != 2)
+		if(numberParameteres != 2)
 		{
-			throw new ParametersException("Error in command-line arguments - required 2 arguments.\n usage: java -cp bin:audio.jar Demo <inputFile> <outputFile>");
+			throw new ParametersException("Error in command-line arguments - required 2 arguments.\n "
+										+ "usage: java -cp bin:audio.jar Demo <inputFile> <outputFile>");
 		}
 	}
 
-	public static void main(String args[]){
-
+	public static void main(String args[])
+	{
 		try
 		{
 			checkParamters(args.length);

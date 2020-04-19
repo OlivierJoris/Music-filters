@@ -10,7 +10,7 @@ import be.uliege.montefiore.oop.audio.*;
 public class Block implements BlockInterface
 {
 
-	// The filter of a block.
+	// The Filter of a block.
 	private Filter mainFilter;
 
 	// Gets a link to all the filters that are an input of the current Block.
@@ -75,12 +75,12 @@ public class Block implements BlockInterface
      * @param input An array containing n_I samples (one for each input).
      *
      * @throws FilterException Inputs are incomplete.
+	 * @throws FilterException Some IO are not connected properly.
      *
      * @return An array with the resulting n_O samples (one for each output).
     */
 	public double[] computeOneStep(double[] input) throws FilterException
 	{
-
 		if(input == null)
 			throw new FilterException("Null input in computeOneStep of Block.");
 
@@ -113,6 +113,7 @@ public class Block implements BlockInterface
 		mainFilter.reset();
 		return;
 	}
+
 	/* --------------------------------------------
 		GETTERS
 	-------------------------------------------- */
@@ -172,7 +173,7 @@ public class Block implements BlockInterface
 	}
 
 	/**
-	 * Gets the input number based on the block to which it is connected.
+	 * Gets the input number based on the Block to which it is connected.
 	 *
 	 * @param f The considered Block.
 	 *
@@ -203,6 +204,7 @@ public class Block implements BlockInterface
 	 * Returns the number of times the output outputNumber is being used.
 	 *
 	 * @param outputNumber The index of the considered output.
+	 *
 	 * @throws IndexOutOfBoundsException outputNumber is out of bounds.
 	 *
 	 * @return Number of times the output outputNumber is being used.
@@ -319,8 +321,7 @@ public class Block implements BlockInterface
 	 *
 	 * @throws IndexOutOfBoundsException inputNumber is out of bounds.
 	*/
-	public void setInputAvailability(int inputNumber, boolean status) throws
-		IndexOutOfBoundsException
+	public void setInputAvailability(int inputNumber, boolean status) throws IndexOutOfBoundsException
 	{
 		if(inputNumber < 0 || inputNumber >= inputsAvailabilities.length)
 			throw new IndexOutOfBoundsException("inputNumber int setInputAvailability is out of bounds.");
@@ -330,12 +331,14 @@ public class Block implements BlockInterface
 	}
 
 	/**
-	 * Function to reinitiate all the values of inputsAvailabilities.
+	 * Reinitiates all the values of inputsAvailabilities.
 	*/
 	public void reinitiateInputsAvailabilities()
 	{
 		for(int i = 0; i < inputsAvailabilities.length; i++)
 			inputsAvailabilities[i] = false;
+
+		return;
 	}
 
 	/* --------------------------------------------
@@ -369,7 +372,7 @@ public class Block implements BlockInterface
 	}
 
 	/**
-	 * Function to verify that every IO of a Block is well connected.
+	 * Verifies that every IO of a Block is well connected.
 	 *
 	 * @return True if every IO is well connected. Else, false.
 	*/
@@ -380,7 +383,6 @@ public class Block implements BlockInterface
 		// Verifies that every input is connected
 		for(int i = 0; i < inputs.length; i++)
 		{
-			//System.err.println("Input n° " + i + " | value = " + inputs[i]);
 			if(inputs[i] == null)
 			{
 				everythingConnected = false;

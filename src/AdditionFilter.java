@@ -2,7 +2,7 @@ import be.uliege.montefiore.oop.audio.Filter;
 import be.uliege.montefiore.oop.audio.FilterException;
 
 /**
- * Implementation of the AdditionFilter class.
+ * Implementation of the addition filter.
  *
  * @author Maxime GOFFART (180521) and Olivier JORIS (182113)
 */

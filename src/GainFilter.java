@@ -2,18 +2,19 @@ import be.uliege.montefiore.oop.audio.Filter;
 import be.uliege.montefiore.oop.audio.FilterException;
 
 /**
- * Implementation of the GainFilter class.
+ * Implementation of the gain filter.
  *
  * @author Maxime GOFFART (180521) and Olivier JORIS (182113)
 */
 public class GainFilter implements Filter
 {
-    private double gainValue; // The gain value of the GainFilter.
+    private double gainValue; // The gain value of the GainFilter
 
     /**
      * Constructor method.
      *
      * @param gainValue The gain value of the GainFilter.
+	 *
 	 * @throws FilterException The gainValue can't be smaller than 0.
     */
     public GainFilter(double gainValue) throws FilterException

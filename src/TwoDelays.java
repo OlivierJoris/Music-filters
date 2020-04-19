@@ -1,30 +1,31 @@
 import be.uliege.montefiore.oop.audio.*;
 
 /**
- * Implementation of the TwoDelays class.
+ * Implementation of the TwoDelays class which represents
+ * a CompositeFilter composed of two delays in series.
  *
  * @author Maxime GOFFART (180521) and Olivier JORIS (182113).
 */
 public class TwoDelays
 {
-
 	/**
-	 * Method to check the number of arguments given to the program.
+	 * Method to check the number of parameters given to the program.
 	 *
-	 * @param numberParamateres The number of parameters.
+	 * @param numberParameteres The number of parameters.
 	 *
-	 * @throws ParametersException The number of arguments doesn't match what was expected.
+	 * @throws ParametersException The number of parameters doesn't match what was expected.
 	*/
-	static void checkParamters(int numberParamateres) throws ParametersException
+	static void checkParamters(int numberParameteres) throws ParametersException
 	{
-		if(numberParamateres != 2)
+		if(numberParameteres != 2)
 		{
-			throw new ParametersException("Error in command-line arguments - required 2 arguments.\n usage: java -cp bin:audio.jar Demo <inputFile> <outputFile>");
+			throw new ParametersException("Error in command-line arguments - required 2 arguments.\n "
+										+ "usage: java -cp bin:audio.jar Demo <inputFile> <outputFile>");
 		}
 	}
 
-	public static void main(String args[]){
-
+	public static void main(String args[])
+	{
 		try
 		{
 			checkParamters(args.length);
@@ -70,10 +71,5 @@ public class TwoDelays
 			System.err.println(e);
 			System.exit(-1);
 		}
-
-
-
-
-
 	}
 }
