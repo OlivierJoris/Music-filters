@@ -270,37 +270,56 @@ public class CompositeFilter implements CompositeFilterInterface
 		if(input == null)
 			throw new FilterException("Null input in computeOneStep().");
 
-		// Checking that every IO of each block is well connected.
-		for(int i = 0; i < blocks.size(); i++)
+		if(firstComputation)
 		{
-			//Checking IO for one block.
-			if(!blocks.get(i).checkIOConnections())
+			// Checking that each IO of each block is well connected
+			for(int i = 0; i < blocks.size(); i++)
 			{
-				System.err.println("Some IO of the block number " + i + " are NOT connnected.");
-				throw new FilterException("Some IO of the block number " + i
-										  + " are NOT connnected.");
+				//Checking IO for one block.
+				if(!blocks.get(i).checkIOConnections())
+				{
+					System.err.println("Some IO of the block number " + i + " are NOT connnected.");
+					throw new FilterException("Some IO of the block number " + i
+											  + " are NOT connnected.");
+				}
 			}
 
-		}
+			/*
+			 Checking that each path is valid.
+			 If there is a cycle, it must contains at least one DelayFilter
+			*/
+			boolean loopsAreValid = false;
+			try
+			{
+				loopsAreValid = loopsContainDelays();
+			}
+			catch(Exception e)
+			{
+				System.err.println(e.getMessage());
+				throw new FilterException(e.getMessage());
+			}
 
-		boolean loopsAreValid = false;
-		try
-		{
-			loopsAreValid = loopsContainDelays();
-		}
-		catch(Exception e)
-		{
-			System.err.println(e.getMessage());
-			throw new FilterException(e.getMessage());
-		}
+			if(!loopsAreValid)
+			{
+				System.err.println("Some paths are not valid\n");
+				throw new FilterException("Some paths are not valid.\n");
+			}
 
-		if(!loopsAreValid)
-		{
-			System.err.println("Some paths are not valid\n");
-			throw new FilterException("Some paths are not valid.\n");
+			// Initialising the matrix computeOfEachBlock
+			computeOfEachBlock = new double[blocks.size()][];
+
+			for(int i = 0; i < blocks.size(); i++)
+			{
+				//If one Block is a DelayFilter, its first output will be 0.
+				if(blocks.get(i).getMainFilter() instanceof DelayFilter)
+				{
+					computeOfEachBlock[i] = new double[1]; // A delay filter has always 1 output.
+					computeOfEachBlock[i][0] = 0;
+				}
+			}
+
+			firstComputation = false;
 		}
-
-
 
 		// Getting all the blocks that are directly connected to the output of the CompositeFilter
 		Vector<Block> directlyConnectedToOutput = new Vector<Block>();
@@ -328,27 +347,6 @@ public class CompositeFilter implements CompositeFilterInterface
 									   + "are directly connected to the output of the CompositeFilter.");
 				}
 			}
-		}
-
-		/*
-	 	 If it's the first computation, initialises the array computeOfEachBlock that
-		 is going to store the computed values of each Block.
-		*/
-		if(firstComputation)
-		{
-			computeOfEachBlock = new double[blocks.size()][];
-
-			for(int i = 0; i < blocks.size(); i++)
-			{
-				//If one Block is a DelayFilter, its first output will be 0.
-				if(blocks.get(i).getMainFilter() instanceof DelayFilter)
-				{
-					computeOfEachBlock[i] = new double[1]; // A delay filter has always 1 output.
-					computeOfEachBlock[i][0] = 0;
-				}
-			}
-
-			firstComputation = false;
 		}
 
 		/*
