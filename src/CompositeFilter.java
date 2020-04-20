@@ -283,6 +283,25 @@ public class CompositeFilter implements CompositeFilterInterface
 
 		}
 
+		boolean loopsAreValid = false;
+		try
+		{
+			loopsAreValid = loopsContainDelays();
+		}
+		catch(Exception e)
+		{
+			System.err.println(e.getMessage());
+			throw new FilterException(e.getMessage());
+		}
+
+		if(!loopsAreValid)
+		{
+			System.err.println("Some paths are not valid\n");
+			throw new FilterException("Some paths are not valid.\n");
+		}
+
+
+
 		// Getting all the blocks that are directly connected to the output of the CompositeFilter
 		Vector<Block> directlyConnectedToOutput = new Vector<Block>();
 		Block tmpDirectlyConnected = null;
@@ -763,7 +782,7 @@ public class CompositeFilter implements CompositeFilterInterface
 	 * @return True if the input inputNumber of the Block f is connected to one of the input
 	 * of the CompositeFilter. Else, false.
 	*/
-	private boolean connectedToInputOfComposite(Block f, int inputNumber) throws Exception
+	private boolean connectedToInputOfComposite(Block f, int inputNumber) throws NullPointerException, IndexOutOfBoundsException
 	{
 		if(f == null)
 			throw new NullPointerException("The given Block in connectedToInputOfComposite is null.");
@@ -821,6 +840,183 @@ public class CompositeFilter implements CompositeFilterInterface
 			}
 		}
 		return is;
+	}
+
+	/**
+	 * Returns if a given Block is an output of the CompositeFilter.
+	 *
+	 * @param f The Block we want to check whether it's an output of the CompositeFilter or not.
+	 *
+	 * @throws NullPointerException The given Block is null.
+	 *
+	 * @return True if the Block f is an output of the CompositeFilter. Else, false.
+	*/
+	private boolean isCompositeOutput(Block f) throws NullPointerException
+	{
+		if(f == null)
+			throw new NullPointerException("The given Block in isCompositeOutput is null.");
+
+		boolean is = false;
+
+		for(int i = 0; i < numberOutputs; i++)
+		{
+			if(outputs[i] == f)
+				return true;
+		}
+		return is;
+	}
+
+	/**
+	 * Verifies that every loop contains a DelayFilter.
+	 *
+	 * @throws CompositeFilterException Error while analysing one path.
+	 *
+	 * @return True if every loop contains a DelayFilter. Else, false.
+	*/
+	private boolean loopsContainDelays() throws CompositeFilterException
+	{
+		boolean tmpValid = true;
+
+		int tmpLengthEmbedded = -1;
+		Block tmpBlock = null;
+		Block tmpOutputBlock = null;
+
+		// We need to analyse each Block of the CompositeFilter
+		for(int i = 0; i < blocks.size(); i++)
+		{
+			try
+			{
+				tmpBlock = blocks.get(i);
+			}
+			catch(ArrayIndexOutOfBoundsException e)
+			{
+				throw new CompositeFilterException(e.getMessage());
+			}
+
+			for(int j = 0; j < tmpBlock.nbOutputs(); j++)
+			{
+				try
+				{
+					tmpLengthEmbedded = tmpBlock.getOutputLengthEmbedded(j);
+				}
+				catch(Exception e)
+				{
+					throw new CompositeFilterException("In loopsContainDelays" + e.getMessage());
+				}
+
+				for(int k = 0; k < tmpLengthEmbedded; k++)
+				{
+					try
+					{
+						tmpOutputBlock = tmpBlock.getOutput(j, k);
+					}
+					catch(IndexOutOfBoundsException e)
+					{
+						throw new CompositeFilterException(e.getMessage());
+					}
+
+					try
+					{
+						if(tmpBlock.getMainFilter() instanceof DelayFilter)
+							tmpValid = validPathScanner(tmpBlock, tmpOutputBlock, true);
+						else
+							tmpValid = validPathScanner(tmpBlock, tmpOutputBlock, false);
+					}
+					catch(CompositeFilterException e)
+					{
+						throw new CompositeFilterException(e.getMessage());
+					}
+
+					if(!tmpValid)
+					{
+						System.err.println("Not valid for block n° " + i + " = " + tmpBlock + " connected to " + tmpOutputBlock);
+						throw new CompositeFilterException("Not valid for block n° " + i + " = " + tmpBlock + " connected to " + tmpOutputBlock);
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Verifies that every path that started at startingBlock is valid.
+	 *
+	 * A path is valid if it contains a loop with a delay filter or if it does
+	 * not contain a loop and is connected to an output of the CompositeFilter.
+	 *
+	 * @param startingBlock The Block from where the analysis started.
+	 * @param currentBlock The Block where the analysis is currently at.
+	 * @param delayDetected A DelayFilter has been detected.
+	 *
+	 * @throws CompositeFilterException An error occured while checking a path
+	 *
+	 * @return True if the path that started at startingBlock is valid. Else, false.
+	*/
+	private boolean validPathScanner(Block startingBlock, Block currentBlock, boolean delayDetected)
+		throws CompositeFilterException
+	{
+		// Loop between startingBlock and itself without a DelayFilter
+		if(startingBlock == currentBlock && !delayDetected)
+			return false;
+		// Loop between startingBlock and itself with a DelayFilter
+		if(startingBlock == currentBlock && delayDetected)
+			return true;
+
+		boolean currentBlockIsCompositeOutput;
+		try
+		{
+			currentBlockIsCompositeOutput = isCompositeOutput(currentBlock);
+		}
+		catch(NullPointerException e)
+		{
+			throw new CompositeFilterException(e.getMessage());
+		}
+
+		// currentBlock is an output of the CompositeFilter so the path is valid.
+		if(currentBlockIsCompositeOutput)
+			return true;
+
+		boolean newDelayDetectedStatus = false;
+		if(delayDetected)
+			newDelayDetectedStatus = true;
+		else if(currentBlock.getMainFilter() instanceof DelayFilter)
+			newDelayDetectedStatus = true;
+
+		// Recursive calls on each output of the Block currentBlock
+		int tmpLengthEmbedded = -1;
+		boolean iscfOutput = false;
+		boolean currentPathLoop, newPathLoop;
+		for(int i = 0; i < currentBlock.nbOutputs(); i++)
+		{
+			try
+			{
+				tmpLengthEmbedded = currentBlock.getOutputLengthEmbedded(i);
+			}
+			catch(IndexOutOfBoundsException e)
+			{
+				throw new CompositeFilterException(e.getMessage());
+			}
+
+			for(int j = 0; j < tmpLengthEmbedded; j++)
+			{
+				try
+				{
+					// Recursive call to continue the current path
+					currentPathLoop = validPathScanner(startingBlock, currentBlock.getOutput(i, j),
+															newDelayDetectedStatus);
+				}
+				catch(Exception e)
+				{
+					System.err.println(e.getMessage());
+					throw new CompositeFilterException(e.getMessage());
+				}
+
+				if(!currentPathLoop)
+					return false;
+			}
+		}
+		return true;
 	}
 
 }

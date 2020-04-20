@@ -58,7 +58,7 @@ public interface BlockInterface extends Filter
 	 * @throws NullPointerException f is null.
 	 * @throws IndexOutOfBoundsException  inputNumber is out of bounds.
 	*/
-	void setInput(Block f, int inputNumber) throws Exception;
+	void setInput(Block f, int inputNumber) throws NullPointerException, IndexOutOfBoundsException;
 
 	/**
 	 * Sets the output outputNumber as f.
@@ -69,7 +69,7 @@ public interface BlockInterface extends Filter
 	 * @throws NullPointerException f is null.
 	 * @throws IndexOutOfBoundsException outputNumber is out of bounds.
 	*/
-	void setOutput(Block f, int outputNumber) throws Exception;
+	void setOutput(Block f, int outputNumber) throws NullPointerException, IndexOutOfBoundsException;
 
 	/**
 	 * Sets the input inputNumber availability status as status.

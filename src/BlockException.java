@@ -3,7 +3,7 @@
  *
  * @author Maxime GOFFART (180521) and Olivier JORIS (182113).
 */
-class BlockException extends Exception{
+public class BlockException extends Exception{
 
 	/**
 	 * Constructor without parameters.

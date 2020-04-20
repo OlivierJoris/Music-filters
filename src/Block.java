@@ -278,7 +278,7 @@ public class Block implements BlockInterface
 	 * @throws NullPointerException f is null.
 	 * @throws IndexOutOfBoundsException  inputNumber is out of bounds.
 	*/
-	public void setInput(Block f, int inputNumber) throws Exception
+	public void setInput(Block f, int inputNumber) throws NullPointerException, IndexOutOfBoundsException
 	{
 		if(f == null)
 			throw new NullPointerException("Block f is null in setInput.");
@@ -300,7 +300,7 @@ public class Block implements BlockInterface
 	 * @throws NullPointerException f is null.
 	 * @throws IndexOutOfBoundsException outputNumber is out of bounds.
 	*/
-	public void setOutput(Block f, int outputNumber) throws Exception
+	public void setOutput(Block f, int outputNumber) throws NullPointerException, IndexOutOfBoundsException
 	{
 		if(f == null)
 			throw new NullPointerException("Block f is null in setOutput.");
@@ -368,7 +368,6 @@ public class Block implements BlockInterface
 								   " connected to " + outputs.get(i).get(j));
 			}
 		}
-
 	}
 
 	/**
