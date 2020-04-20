@@ -67,7 +67,7 @@ public class GainFilter implements Filter
     }
 
 	/**
-     * Resets the GainFilter
+     * Resets the GainFilter.
     */
     public void reset()
     {

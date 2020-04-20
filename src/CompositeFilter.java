@@ -55,31 +55,6 @@ public class CompositeFilter implements CompositeFilterInterface
 		blocks = new Vector<Block>();
 	}
 
-	/* -- NEED TO BE REMOVE BEOFRE SUBMISSION -- */
-	public void displayAllBlocks()
-	{
-		System.out.println("\nIN of the CompositeFilter");
-		for(int i = 0; i < numberInputs; i++)
-		{
-			System.out.println("Input n° " + i + " | value = " + inputs[i]);
-		}
-		System.out.println("OUT of the CompositeFilter");
-		for(int i = 0; i < numberOutputs; i++)
-		{
-			System.out.println("Output n° " + i + " | value = " + outputs[i]);
-		}
-
-
-		System.out.println("\n** blocks of the composite filter **");
-
-		for(int i = 0; i < blocks.size(); i++)
-		{
-			System.out.println("Block n° " + i + " | value = " + blocks.get(i));
-		}
-
-		return;
-	}
-
 	/* --------------------------------------------
 
 	 METHODS FROM FILTER INTERFACE
@@ -1016,5 +991,5 @@ public class CompositeFilter implements CompositeFilterInterface
 		}
 		return true;
 	}
-
+	
 }

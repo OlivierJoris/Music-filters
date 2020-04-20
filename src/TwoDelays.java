@@ -49,19 +49,17 @@ public class TwoDelays
 			Filter delay1 = new DelayFilter(44100 * 3);
 			Filter delay2 = new DelayFilter(44100 * 3);
 
-			System.out.println("Tree basic blocks instanciated.");
+			System.out.println("Three basic blocks instanciated.");
 
 			cf.addBlock(delay1);
 			cf.addBlock(delay2);
 
-			System.out.println("Tree basic blocks added to the composite filter.");
+			System.out.println("Three basic blocks added to the composite filter.");
 
 			cf.connectInputToBlock(0, delay1, 0);
             cf.connectBlockToBlock(delay1, 0, delay2, 0);
 
             cf.connectBlockToOutput(delay2, 0, 0);
-
-			cf.displayAllBlocks();
 
 			TestAudioFilter.applyFilter(cf, args[0], args[1]);
 

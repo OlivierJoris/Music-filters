@@ -347,29 +347,6 @@ public class Block implements BlockInterface
 
 	-------------------------------------------- */
 
-	/* -- NEED TO BE REMOVE BEOFRE SUBMISSION -- */
-	public void displayAllInputs()
-	{
-		for(int i = 0; i < inputs.length; i++)
-		{
-			System.out.println("block " + this + " | input n° " + i + " connected to "
-							   + inputs[i]);
-		}
-	}
-
-	/* -- NEED TO BE REMOVE BEOFRE SUBMISSION -- */
-	public void displayAllOutputs()
-	{
-		for(int i = 0; i < outputs.size(); i++)
-		{
-			for(int j = 0; j < outputs.get(i).size(); j++)
-			{
-				System.out.println("block " + this + " | ouput n° " + i + "|" + j +
-								   " connected to " + outputs.get(i).get(j));
-			}
-		}
-	}
-
 	/**
 	 * Verifies that every IO of a Block is well connected.
 	 *
@@ -407,5 +384,5 @@ public class Block implements BlockInterface
 
 		return everythingConnected;
 	}
-
+	
 }

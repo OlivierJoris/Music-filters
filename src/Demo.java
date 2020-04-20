@@ -63,8 +63,6 @@ public class Demo
 			cf.connectBlockToBlock(mult, 0, add, 1);
             cf.connectBlockToOutput(add, 0, 0);
 
-			cf.displayAllBlocks();
-
 			TestAudioFilter.applyFilter(cf, args[0], args[1]);
 		}
 		catch(Exception e)
