@@ -50,8 +50,6 @@ public class AdditionFilter implements Filter
         if(input.length != nbInputs())
             throw new FilterException("Inputs are incomplete in computeOneStep of AdditionFilter.");
 
-        //System.out.println(input.length);
-
         double[] output = new double[1];
 
         output[0] = input[0] + input[1];

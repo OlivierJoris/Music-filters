@@ -396,7 +396,6 @@ public class Block implements BlockInterface
 		{
 			for(int k = 0; k < outputs.get(j).size(); k++)
 			{
-				//System.out.println("Output n° " + j + " | value = " + outputs[j]);
 				if(outputs.get(j).get(k) == null)
 				{
 					everythingConnected = false;
