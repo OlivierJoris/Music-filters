@@ -71,7 +71,6 @@ public class GainFilter implements Filter
     */
     public void reset()
     {
-        // We do not need to reset anything.
         return;
     }
 }

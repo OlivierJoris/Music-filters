@@ -4,10 +4,10 @@
  *
  * @author Maxime GOFFART (180521) and Olivier JORIS (182113).
 */
-public class ParametersException extends Exception{
-
+public class ParametersException extends Exception
+{
 	/**
-	 * Constructor without paramaters.
+	 * Constructor without parameters.
 	*/
 	public ParametersException() { super();}
 

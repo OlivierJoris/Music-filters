@@ -39,7 +39,7 @@ public class Demo
 		System.out.println("Detected output file : " + args[1]);
 		System.out.println();
 
-		// Creates the CompositeFilter & creates the basic block
+		// Creates the CompositeFilter & the basic Blocks
 		try
 		{
 			CompositeFilter cf = new CompositeFilter(1, 1);

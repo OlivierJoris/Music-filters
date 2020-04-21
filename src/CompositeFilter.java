@@ -9,26 +9,29 @@ import be.uliege.montefiore.oop.audio.*;
 */
 public class CompositeFilter implements CompositeFilterInterface
 {
-
 	private int numberInputs; // number of inputs of the CompositeFilter
 	private int numberOutputs; // number of outputs of the CompositeFilter
 
-	private Vector<Block> blocks; // Storing all the filters of the CompositeFilter
+	private Vector<Block> blocks; // Storing all the Filters of the CompositeFilter
 
 	private Block[] inputs = null; // inputs of the CompositeFilter
 	private Block[] outputs = null; // outputs of the CompositeFilter
 
-	// Saving the computed values of each block
+	// Stroing all the Blocks that are directly connected to the output of the CompositeFilter
+	private Vector<Block> directlyConnectedToOutput = null;
+
+	// Saving the computed values of each Block inside the CompositeFilter
 	private double[][] computeOfEachBlock = null;
 	private boolean firstComputation = true;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 *
 	 * @param numberInputs The number of inputs of the CompositeFilter.
 	 * @param numberOutputs The number of outputs of the CompositeFilter.
 	 *
-	 * @throws CompositeFilterException Error in the parameters.
+	 * @throws CompositeFilterException numberInputs can't be < 0
+	 * @throws CompositeFilterException numberOutputs can't be < 0
 	*/
 	public CompositeFilter(int numberInputs, int numberOutputs) throws CompositeFilterException
 	{
@@ -40,12 +43,14 @@ public class CompositeFilter implements CompositeFilterInterface
 		this.numberInputs = numberInputs;
 		this.numberOutputs = numberOutputs;
 
+		// Initialises the inputs
 		inputs = new Block[numberInputs];
 		for(int i = 0; i < numberInputs; i++)
 		{
 			inputs[i] = new Block(new CompositeIn());
 		}
 
+		// Initialises the outputs
 		outputs = new Block[numberOutputs];
 		for(int i = 0; i < numberOutputs; i++)
 		{
@@ -86,7 +91,7 @@ public class CompositeFilter implements CompositeFilterInterface
 	private void computeRecursive(Block entryBlock, double[] input) throws Exception
 	{
 		// In the case that some inputs are not available, recursive call on
-		// the blocks which act as inputs and that are not available.
+		// the Blocks which act as inputs and that are not available.
 		if(!entryBlock.checkInputsAvailabilities())
 		{
 			boolean[] availabilities = entryBlock.getAllAvailabilities();
@@ -123,12 +128,12 @@ public class CompositeFilter implements CompositeFilterInterface
 		// of entryBlock.
 		Block[] tmpAllInputs = entryBlock.getAllInputs();
 
-		// We retract all the computed value of each input of the entryBlock.
+		// We retract all the computed values of each input of the entryBlock.
 		double[] inputsValue = new double[tmpAllInputs.length];
 
 		int tmpIndex = -1;
 
-		// We retract all the computed value of each input of the entryBlock.
+		// We retract all the computed values of each input of the entryBlock.
 		for(int i = 0; i < tmpAllInputs.length; i++)
 		{
 			if(isCompositeInput(tmpAllInputs[i]))
@@ -245,6 +250,7 @@ public class CompositeFilter implements CompositeFilterInterface
 		if(input == null)
 			throw new FilterException("Null input in computeOneStep().");
 
+		// In case it is the first call to computeOneStep
 		if(firstComputation)
 		{
 			// Checking that each IO of each block is well connected
@@ -288,40 +294,39 @@ public class CompositeFilter implements CompositeFilterInterface
 				//If one Block is a DelayFilter, its first output will be 0.
 				if(blocks.get(i).getMainFilter() instanceof DelayFilter)
 				{
-					computeOfEachBlock[i] = new double[1]; // A delay filter has always 1 output.
+					computeOfEachBlock[i] = new double[1]; // A DelayFilter has always 1 output.
 					computeOfEachBlock[i][0] = 0;
 				}
 			}
 
-			firstComputation = false;
-		}
-
-		// Getting all the blocks that are directly connected to the output of the CompositeFilter
-		Vector<Block> directlyConnectedToOutput = new Vector<Block>();
-		Block tmpDirectlyConnected = null;
-		for(int i = 0; i < numberOutputs; i++)
-		{
-			for(int j = 0; j < outputs[i].nbInputs(); j++)
+			// Getting all the blocks that are directly connected to the output of the CompositeFilter
+			directlyConnectedToOutput = new Vector<Block>();
+			Block tmpDirectlyConnected = null;
+			for(int i = 0; i < numberOutputs; i++)
 			{
-
-				try
+				for(int j = 0; j < outputs[i].nbInputs(); j++)
 				{
-					tmpDirectlyConnected = outputs[i].getInput(j);
-					if(!(directlyConnectedToOutput.contains(tmpDirectlyConnected)))
+					try
 					{
-						directlyConnectedToOutput.add(tmpDirectlyConnected);
+						tmpDirectlyConnected = outputs[i].getInput(j);
+						if(!(directlyConnectedToOutput.contains(tmpDirectlyConnected)))
+						{
+							directlyConnectedToOutput.add(tmpDirectlyConnected);
+						}
+					}
+					catch(Exception e)
+					{
+						System.err.println("Error while adding the input " + j + " of the"
+										   + " output " + i + " of the CompositeFilter to those that"
+										   + "are directly connected to the output of the CompositeFilter.");
+						throw new FilterException("Error while adding the input " + j + " of the"
+										   + " output " + i + " of the CompositeFilter to those that"
+										   + "are directly connected to the output of the CompositeFilter.");
 					}
 				}
-				catch(Exception e)
-				{
-					System.err.println("Error while adding the input " + j + " of the"
-									   + " output " + i + " of the CompositeFilter to those that"
-									   + "are directly connected to the output of the CompositeFilter.");
-					throw new FilterException("Error while adding the input " + j + " of the"
-									   + " output " + i + " of the CompositeFilter to those that"
-									   + "are directly connected to the output of the CompositeFilter.");
-				}
 			}
+
+			firstComputation = false;
 		}
 
 		/*
@@ -339,7 +344,6 @@ public class CompositeFilter implements CompositeFilterInterface
 				throw new FilterException("Error in computeRecursive for block " +
 											directlyConnectedToOutput.get(i));
 			}
-
 		}
 
 		/*
@@ -377,8 +381,8 @@ public class CompositeFilter implements CompositeFilterInterface
 			// Resets all the inputs avaibilities for the Block i.
 			blocks.get(i).reinitiateInputsAvailabilities();
 
-			// If one block is directly connected to the input of the composite
-			// filter than its input is always available.
+			// If one Block is directly connected to the input of the CompositeFilter
+			// than its inputs are always available.
 			for(int j = 0; j < blocks.get(i).nbInputs(); j++)
 			{
 				try
@@ -460,7 +464,7 @@ public class CompositeFilter implements CompositeFilterInterface
 	/**
 	 * Adds a Filter to the CompositeFilter.
 	 *
-	 * @param f The filter we want to add.
+	 * @param f The Filter we want to add.
 	 *
 	 * @throws NullPointerException Filter f is null.
 	*/
@@ -511,14 +515,10 @@ public class CompositeFilter implements CompositeFilterInterface
 		}
 
 		if(indexF1 < 0)
-		{
 			throw new CompositeFilterException("The filter f1 is NOT included in the CompositeFilter.");
-		}
 
 		if(indexF2 < 0)
-		{
 			throw new CompositeFilterException("The filter f2 is NOT included in the CompositeFilter.");
-		}
 
 		try
 		{
@@ -588,9 +588,7 @@ public class CompositeFilter implements CompositeFilterInterface
 		}
 
 		if(indexF1 < 0)
-		{
 			throw new CompositeFilterException("The filter f1 is NOT included in the CompositeFilter.");
-		}
 
 		try
 		{
@@ -644,10 +642,8 @@ public class CompositeFilter implements CompositeFilterInterface
 		}
 
 		if(indexF2 < 0)
-		{
 			throw new CompositeFilterException("The filter f2 is NOT included in the "
 										       + "CompositeFilter.");
-		}
 
 		try
 		{
@@ -705,23 +701,20 @@ public class CompositeFilter implements CompositeFilterInterface
 		for(int i = 0; i < blocks.size(); i++)
 		{
 			if(f == blocks.get(i))
-			{
-				index = i;
-				return index;
-			}
+				return i;
 		}
 
 		return index;
 	}
 
 	/**
-	 * Returns if a given Filter is included in the CompositeFilter.
+	 * Returns the index of a given Filter inside the CompositeFilter.
 	 *
 	 * @param f The Filter we are considering.
 	 *
 	 * @throws NullPointerException The given Filter f is null.
 	 *
-	 * @return True if f is included in the CompositeFilter. Else, false.
+	 * @return The index of the Filter f.
 	*/
 	private int foundFilter(Filter f) throws NullPointerException
 	{
@@ -733,10 +726,7 @@ public class CompositeFilter implements CompositeFilterInterface
 		for(int i = 0; i < blocks.size(); i++)
 		{
 			if(blocks.get(i).getMainFilter() == f)
-			{
-				included = i;
-				return included;
-			}
+				return i;
 		}
 
 		return included;
@@ -749,7 +739,7 @@ public class CompositeFilter implements CompositeFilterInterface
 	 * @param f The Block we are considering.
 	 * @param inputNumber The input of the Block we are considering.
 	 *
-	 * @throws NullPointerException The given Block is null.
+	 * @throws NullPointerException The given Block f is null.
 	 * @throws IndexOutOfBoundsException inputNumber is out of bounds.
 	 *
 	 * @return True if the input inputNumber of the Block f is connected to one of the input
@@ -779,10 +769,7 @@ public class CompositeFilter implements CompositeFilterInterface
 			}
 
 			if(tmp == inputs[i])
-			{
-				connectionToInputOfComposite = true;
-				return connectionToInputOfComposite;
-			}
+				return true;
 		}
 
 		return connectionToInputOfComposite;
@@ -807,10 +794,7 @@ public class CompositeFilter implements CompositeFilterInterface
 		for(int i = 0; i < nbInputs(); i++)
 		{
 			if(inputs[i] == f)
-			{
-				is = true;
-				return is;
-			}
+				return true;
 		}
 		return is;
 	}
@@ -844,7 +828,7 @@ public class CompositeFilter implements CompositeFilterInterface
 	 *
 	 * @throws CompositeFilterException Error while analysing one path.
 	 *
-	 * @return True if every loop contains a DelayFilter. Else, false.
+	 * @return True if every loop contains at least one DelayFilter. Else, false.
 	*/
 	private boolean loopsContainDelays() throws CompositeFilterException
 	{
@@ -915,14 +899,15 @@ public class CompositeFilter implements CompositeFilterInterface
 	/**
 	 * Verifies that every path that started at startingBlock is valid.
 	 *
-	 * A path is valid if it contains a loop with a delay filter or if it does
-	 * not contain a loop and is connected to an output of the CompositeFilter.
+	 * A path is valid if it contains a loop with at least one delay filter
+	 * or if it does not contain a loop and is connected to an output of the
+	 * CompositeFilter.
 	 *
 	 * @param startingBlock The Block from where the analysis started.
 	 * @param currentBlock The Block where the analysis is currently at.
 	 * @param delayDetected A DelayFilter has been detected.
 	 *
-	 * @throws CompositeFilterException An error occured while checking a path
+	 * @throws CompositeFilterException An error occured while checking a path.
 	 *
 	 * @return True if the path that started at startingBlock is valid. Else, false.
 	*/
@@ -991,5 +976,5 @@ public class CompositeFilter implements CompositeFilterInterface
 		}
 		return true;
 	}
-	
+
 }

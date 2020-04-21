@@ -4,8 +4,8 @@
  *
  * @author Maxime GOFFART (180521) and Olivier JORIS (182113).
 */
-public class CompositeFilterException extends Exception{
-
+public class CompositeFilterException extends Exception
+{
 	/**
 	 * Constructor without paramaters.
 	*/

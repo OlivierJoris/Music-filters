@@ -10,7 +10,7 @@ public interface CompositeFilterInterface extends Filter
 	/**
 	 * Adds a Filter to the CompositeFilter.
 	 *
-	 * @param f The filter we want to add.
+	 * @param f The Filter we want to add.
 	 *
 	 * @throws NullPointerException Filter f is null.
 	*/
@@ -19,9 +19,9 @@ public interface CompositeFilterInterface extends Filter
 	/**
 	 * Connects the output o1 of the Filter f1 to the input i2 of the Filter f2.
 	 *
-	 * @param f1 One of the Filter we wish to connect.
+	 * @param f1 One of the Filter we want to connect.
 	 * @param o1 The output number of the Filter f1 we want to conenct.
-	 * @param f2 The other Filter we wish to connect.
+	 * @param f2 The other Filter we want to connect.
 	 * @param i2 The input number of the Filter f2 we want to connect.
 	 *
 	 * @throws Exception An error occured.

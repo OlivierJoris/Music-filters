@@ -7,11 +7,10 @@ import be.uliege.montefiore.oop.audio.Filter;
 */
 public interface BlockInterface extends Filter
 {
-
 	/**
 	 * Returns the main filter of the Block.
 	 *
-	 * @return The main filter of the Block.
+	 * @return The main Filter of the Block.
 	*/
 	public Filter getMainFilter();
 
@@ -20,7 +19,7 @@ public interface BlockInterface extends Filter
 	 *
 	 * @param inputNumber The index of the considered input.
 	 *
-	 * @throws IndexOutOfBoundsException inputNumber is not valid.
+	 * @throws IndexOutOfBoundsException inputNumber is out of bounds.
 	 *
 	 * @return The Block linked to the input inputNumber.
 	*/
@@ -32,7 +31,8 @@ public interface BlockInterface extends Filter
 	 * @param outputNumber The index of the considered output.
 	 * @param index The index inside the output outputNumber.
 	 *
-	 * @throws IndexOutOfBoundsException outputNumber and/or index is not valid.
+	 * @throws IndexOutOfBoundsException outputNumber is out of bounds.
+	 * @throws IndexOutOfBoundsException index is out of bounds.
 	 *
 	 * @return The Block linked to the output outputNumber index.
 	*/
@@ -56,7 +56,7 @@ public interface BlockInterface extends Filter
 	 * @param inputNumber The index of the considered input.
 	 *
 	 * @throws NullPointerException f is null.
-	 * @throws IndexOutOfBoundsException  inputNumber is out of bounds.
+	 * @throws IndexOutOfBoundsException inputNumber is out of bounds.
 	*/
 	void setInput(Block f, int inputNumber) throws NullPointerException, IndexOutOfBoundsException;
 

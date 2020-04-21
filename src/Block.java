@@ -9,15 +9,14 @@ import be.uliege.montefiore.oop.audio.*;
 */
 public class Block implements BlockInterface
 {
-
-	// The Filter of a block.
+	// The Filter of a Block.
 	private Filter mainFilter;
 
-	// Gets a link to all the filters that are an input of the current Block.
+	// Saves a link to all the Filters that are an input of the current Block.
 	private Block[] inputs = null;
 
 	/*
-	 Gets a link to all the outputs of the current Block which are acting as inputs of
+	 Saves a link to all the outputs of the current Block which are acting as inputs of
 	 other Blocks.
 	*/
 	private ArrayList<ArrayList<Block>> outputs = null;
@@ -119,9 +118,9 @@ public class Block implements BlockInterface
 	-------------------------------------------- */
 
 	/**
-	 * Returns the main filter of the Block.
+	 * Returns the main Filter of the Block.
 	 *
-	 * @return The main filter of the Block.
+	 * @return The main Filter of the Block.
 	*/
 	public Filter getMainFilter(){ return mainFilter;}
 
@@ -130,7 +129,7 @@ public class Block implements BlockInterface
 	 *
 	 * @param inputNumber The index of the considered input.
 	 *
-	 * @throws IndexOutOfBoundsException inputNumber is not valid.
+	 * @throws IndexOutOfBoundsException inputNumber is out of bounds.
 	 *
 	 * @return The Block linked to the input inputNumber.
 	*/
@@ -145,7 +144,7 @@ public class Block implements BlockInterface
 	/**
 	 * Returns all the inputs of the Block.
 	 *
-	 * @return All the inputs as an array of Block.
+	 * @return All the inputs as an array of Blocks.
 	*/
 	public Block[] getAllInputs()
 	{
@@ -158,7 +157,8 @@ public class Block implements BlockInterface
 	 * @param outputNumber The index of the considered output.
 	 * @param index The index inside the output outputNumber.
 	 *
-	 * @throws IndexOutOfBoundsException outputNumber and/or index is not valid.
+	 * @throws IndexOutOfBoundsException outputNumber is out of bounds.
+	 * @throws IndexOutOfBoundsException index is out of bounds.
 	 *
 	 * @return The Block linked to the output outputNumber index.
 	*/
@@ -191,10 +191,7 @@ public class Block implements BlockInterface
 		for(int i = 0; i < inputs.length; i++)
 		{
 			if(inputs[i] == f)
-			{
-				inputNumber = i;
-				return inputNumber;
-			}
+				return i;
 		}
 
 		return inputNumber;
@@ -237,7 +234,7 @@ public class Block implements BlockInterface
 	/**
 	 * Returns the availability status of every input.
 	 *
-	 * @return The availability status of every input as an array of boolean.
+	 * @return The availability status of every input as an array of booleans.
 	*/
 	public boolean[] getAllAvailabilities()
 	{
@@ -256,10 +253,7 @@ public class Block implements BlockInterface
 		for(int i = 0; i < inputsAvailabilities.length; i++)
 		{
 			if(inputsAvailabilities[i] == false)
-			{
-				allAvailable = false;
-				return allAvailable;
-			}
+				return false;
 		}
 
 		return allAvailable;
@@ -276,9 +270,10 @@ public class Block implements BlockInterface
 	 * @param inputNumber The index of the considered input.
 	 *
 	 * @throws NullPointerException f is null.
-	 * @throws IndexOutOfBoundsException  inputNumber is out of bounds.
+	 * @throws IndexOutOfBoundsException inputNumber is out of bounds.
 	*/
-	public void setInput(Block f, int inputNumber) throws NullPointerException, IndexOutOfBoundsException
+	public void setInput(Block f, int inputNumber)
+		throws NullPointerException, IndexOutOfBoundsException
 	{
 		if(f == null)
 			throw new NullPointerException("Block f is null in setInput.");
@@ -300,7 +295,8 @@ public class Block implements BlockInterface
 	 * @throws NullPointerException f is null.
 	 * @throws IndexOutOfBoundsException outputNumber is out of bounds.
 	*/
-	public void setOutput(Block f, int outputNumber) throws NullPointerException, IndexOutOfBoundsException
+	public void setOutput(Block f, int outputNumber)
+		throws NullPointerException, IndexOutOfBoundsException
 	{
 		if(f == null)
 			throw new NullPointerException("Block f is null in setOutput.");
@@ -324,7 +320,7 @@ public class Block implements BlockInterface
 	public void setInputAvailability(int inputNumber, boolean status) throws IndexOutOfBoundsException
 	{
 		if(inputNumber < 0 || inputNumber >= inputsAvailabilities.length)
-			throw new IndexOutOfBoundsException("inputNumber int setInputAvailability is out of bounds.");
+			throw new IndexOutOfBoundsException("inputNumber in setInputAvailability is out of bounds.");
 
 		inputsAvailabilities[inputNumber] = status;
 		return;
@@ -361,9 +357,8 @@ public class Block implements BlockInterface
 		{
 			if(inputs[i] == null)
 			{
-				everythingConnected = false;
 				System.err.println("Inputs number " + i + " null.");
-				return everythingConnected;
+				return false;
 			}
 
 		}
@@ -375,14 +370,13 @@ public class Block implements BlockInterface
 			{
 				if(outputs.get(j).get(k) == null)
 				{
-					everythingConnected = false;
 					System.err.println("Outputs number " + j + " | "+ k + " null.");
-					return everythingConnected;
+					return false;
 				}
 			}
 		}
 
 		return everythingConnected;
 	}
-	
+
 }
