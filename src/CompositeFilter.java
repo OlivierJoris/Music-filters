@@ -30,8 +30,8 @@ public class CompositeFilter implements CompositeFilterInterface
 	 * @param numberInputs The number of inputs of the CompositeFilter.
 	 * @param numberOutputs The number of outputs of the CompositeFilter.
 	 *
-	 * @throws CompositeFilterException numberInputs can't be < 0
-	 * @throws CompositeFilterException numberOutputs can't be < 0
+	 * @throws CompositeFilterException numberInputs can't be smaller than 0
+	 * @throws CompositeFilterException numberOutputs can't be smaller than 0
 	*/
 	public CompositeFilter(int numberInputs, int numberOutputs) throws CompositeFilterException
 	{
