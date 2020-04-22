@@ -35,27 +35,18 @@ public class Demo
 			System.exit(-1);
 		}
 
-		System.out.println("Detected input file : " + args[0]);
-		System.out.println("Detected output file : " + args[1]);
-		System.out.println();
-
 		// Creates the CompositeFilter & the basic Blocks
 		try
 		{
 			CompositeFilter cf = new CompositeFilter(1, 1);
-			System.out.println("New CompositeFilter instanciated.");
 
 			Filter mult = new GainFilter(0.4);
 			Filter add = new AdditionFilter();
 			Filter delay = new DelayFilter(22050);
 
-			System.out.println("Three basic blocks instanciated.");
-
 			cf.addBlock(delay);
 			cf.addBlock(mult);
 			cf.addBlock(add);
-
-			System.out.println("Three basic blocks added to the composite filter.");
 
 			cf.connectInputToBlock(0, add, 0);
             cf.connectBlockToBlock(add, 0, delay, 0);
