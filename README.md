@@ -1,9 +1,3 @@
-# Object-Oriented Programming
+# Music filter
 
-## Java files
-- Demo.java is the echo filter
-- SoundDiminisher.java is the filter depicted in the file "projet_example.pdf"
-- TwoDelays.java is a composite filter composed of two delays in series
-
-## Documentation
-Available at : ...
+Music filters library implemented in Java. This project has been realized as part of the *Object-oriented programming* course given by Bernard Boigelot at the University of Liège during the 2019-2020 academic year.
